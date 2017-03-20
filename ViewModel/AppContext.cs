@@ -15,7 +15,9 @@ namespace DataHunter.ViewModel
 
 		public AppContext()
 		{
-			Drives = DriveInfo.GetDrives().Select(d => new Drive(d)).ToList();
+			Drives = DriveInfo.GetDrives()
+				.Where(d => d.DriveType == DriveType.Fixed && d.IsReady)
+				.Select(d => new Drive(d)).ToList();
 		}
 
 		public DataContainer SelectedFolder

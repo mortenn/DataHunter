@@ -42,6 +42,19 @@ namespace DataHunter.ViewModel
 			}
 		}
 
+		public bool IsSelected
+		{
+			get
+			{
+				return is_selected;
+			}
+			set
+			{
+				is_selected = value;
+				OnPropertyChanged(nameof(IsSelected));
+			}
+		}
+
 		public List<Folder> Folders
 		{
 			get
@@ -107,7 +120,7 @@ namespace DataHunter.ViewModel
 
 		protected abstract long FindBytes();
 
-		protected DataContainer Parent { get; }
+		public DataContainer Parent { get; }
 
 		protected DataContainer(DataContainer parent)
 		{
@@ -159,5 +172,6 @@ namespace DataHunter.ViewModel
 		private long total_bytes;
 		private bool scanned;
 		private bool is_expanded;
+		private bool is_selected;
 	}
 }

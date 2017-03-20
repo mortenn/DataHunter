@@ -28,13 +28,28 @@ namespace DataHunter.ViewModel
 			}
 			set
 			{
+				if(selected_folder != null && selected_folder == value)
+					return;
+
 				if(selected_folder != null)
+				{
 					selected_folder.AppContext = null;
+					selected_folder.IsSelected = false;
+					if(value != null)
+					{
+						var parent = value;
+						while(parent != null && parent != selected_folder)
+							parent = parent.Parent;
+						if(parent == null && selected_folder != null)
+							selected_folder.IsExpanded = false;
+					}
+				}
 				selected_folder = value;
 				if(selected_folder != null)
 				{
 					selected_folder.AppContext = this;
 					selected_folder.IsExpanded = true;
+					selected_folder.IsSelected = true;
 				}
 				OnPropertyChanged(nameof(SelectedFolder));
 				OnPropertyChanged(nameof(Content));

@@ -7,10 +7,10 @@ namespace DataHunter.Command
 {
 	public abstract class AppCommand : ICommand
 	{
-		public AppCommand(AppContext context)
+		protected AppCommand(AppContext context)
 		{
-			this.Context = context;
-			context.PropertyChanged += ContextOnPropertyChanged;
+			Context = context;
+			Context.PropertyChanged += ContextOnPropertyChanged;
 		}
 
 		private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs args)

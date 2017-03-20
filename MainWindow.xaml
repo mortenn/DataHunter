@@ -140,6 +140,8 @@
 			<StackPanel Grid.Row="2" Orientation="Horizontal" Background="{StaticResource DataGridBackgroundBrush}" TextBlock.Foreground="{StaticResource ForegroundBrush}" TextBlock.FontSize="14">
 				<TextBlock Text="Files in this folder: " Margin="0,2" FontSize="14" />
 				<TextBlock Text="{Binding SelectedFolder.Files,Converter={StaticResource FormatKbSizeConverter}}" FontSize="14" Margin="0,2" />
+				<TextBlock Text=" Including subfolders: " Margin="0,2" FontSize="14" />
+				<TextBlock Text="{Binding SelectedFolder.Bytes,Converter={StaticResource FormatKbSizeConverter}}" FontSize="14" Margin="0,2" />
 			</StackPanel>
 
 			<DataGrid Grid.Row="3" ItemsSource="{Binding Content}" AutoGenerateColumns="False">

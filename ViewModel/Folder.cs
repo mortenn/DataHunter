@@ -39,6 +39,11 @@ namespace DataHunter.ViewModel
 			{
 				return Info.GetFiles().Sum(f => f.Length);
 			}
+			catch(DirectoryNotFoundException)
+			{
+				AccessDenied = true;
+				return 0;
+			}
 			catch(UnauthorizedAccessException)
 			{
 				AccessDenied = true;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -65,6 +66,11 @@ namespace DataHunter.ViewModel
 				try
 				{
 					folders = Scan();
+				}
+				catch(DirectoryNotFoundException)
+				{
+					AccessDenied = true;
+					folders = new List<Folder>();
 				}
 				catch(UnauthorizedAccessException)
 				{

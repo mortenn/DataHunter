@@ -16,10 +16,6 @@ namespace DataHunter.ViewModel
 	{
 		public bool AccessDenied { get; protected set; }
 
-		public ICommand Open => open_command ?? (open_command = new OpenCommand(FullName));
-
-		public ICommand Refresh => refresh_command ?? (refresh_command = new RefreshCommand(this));
-
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public abstract List<DataContainer> Path { get; }
@@ -171,8 +167,6 @@ namespace DataHunter.ViewModel
 			AppContext?.Refresh();
 		}
 
-		private OpenCommand open_command;
-		private RefreshCommand refresh_command;
 		private List<Folder> folders;
 		private long bytes;
 		private long total_bytes;

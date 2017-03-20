@@ -1,33 +1,21 @@
-﻿using System;
-using System.Windows.Input;
-using DataHunter.ViewModel;
+﻿using DataHunter.ViewModel;
 
 namespace DataHunter.Command
 {
-	public class RefreshCommand : ICommand
+	public class RefreshCommand : AppCommand
 	{
-		public RefreshCommand(DataContainer container)
+		public RefreshCommand(AppContext context) : base(context)
 		{
-			this.container = container;
 		}
 
-		public bool CanExecute(object parameter)
+		public override bool CanExecute(object parameter)
 		{
-			return container != null && !container.AccessDenied && !container.Scanning;
+			return Context.SelectedFolder != null && !Context.SelectedFolder.AccessDenied && !Context.SelectedFolder.Scanning;
 		}
 
-		public void Execute(object parameter)
+		public override void Execute(object parameter)
 		{
-			container.Rescan();
+			Context.SelectedFolder.Rescan();
 		}
-
-		public event EventHandler CanExecuteChanged;
-
-		protected virtual void OnCanExecuteChanged()
-		{
-			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		private readonly DataContainer container;
 	}
 }

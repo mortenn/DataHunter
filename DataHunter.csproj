@@ -68,6 +68,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Command\AppCommand.cs" />
+    <Compile Include="Command\NavigateCommand.cs" />
     <Compile Include="Command\OpenCommand.cs" />
     <Compile Include="Command\RefreshCommand.cs" />
     <Compile Include="Properties\Annotations.cs" />

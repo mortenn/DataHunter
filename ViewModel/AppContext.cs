@@ -3,22 +3,34 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using DataHunter.Annotations;
+using DataHunter.Command;
 
 namespace DataHunter.ViewModel
 {
 	public class AppContext : INotifyPropertyChanged
 	{
-		public List<Drive> Drives { get; }
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
 		public AppContext()
 		{
+			NavigateCommand = new NavigateCommand(this);
+			OpenCommand = new OpenCommand(this);
+			RefreshCommand = new RefreshCommand(this);
+
 			Drives = DriveInfo.GetDrives()
 				.Where(d => d.DriveType == DriveType.Fixed && d.IsReady)
 				.Select(d => new Drive(d)).ToList();
 		}
+
+		public List<Drive> Drives { get; }
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public ICommand NavigateCommand { get; }
+
+		public ICommand OpenCommand { get; }
+
+		public ICommand RefreshCommand { get; }
 
 		public DataContainer SelectedFolder
 		{

@@ -118,8 +118,9 @@
 			</Grid.RowDefinitions>
 
 			<StackPanel Grid.Row="0" Background="{StaticResource DataGridBackgroundBrush}" Orientation="Horizontal">
-				<Button Content="↻" Command="{Binding SelectedFolder.Refresh}" FontSize="16" Margin="2,2,2,2" />
-				<Button Content="Open in explorer" Command="{Binding SelectedFolder.Open}" FontSize="16" Margin="0,2" />
+				<Button Content="⬑" Command="{Binding NavigateCommand}" FontSize="16" Margin="2" />
+				<Button Content="↻" Command="{Binding RefreshCommand}" FontSize="16" Margin="0,2" />
+				<Button Content="Open in explorer" Command="{Binding OpenCommand}" FontSize="16" Margin="0,2" />
 			</StackPanel>
 
 			<ListBox Grid.Row="1" ItemsSource="{Binding SelectedFolder.Path}"

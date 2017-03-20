@@ -1,33 +1,22 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows.Input;
+﻿using System.Diagnostics;
+using DataHunter.ViewModel;
 
 namespace DataHunter.Command
 {
-	public class OpenCommand : ICommand
+	public class OpenCommand : AppCommand
 	{
-		public OpenCommand(string path)
+		public OpenCommand(AppContext context) : base(context)
 		{
-			this.path = path;
 		}
 
-		public bool CanExecute(object parameter)
+		public override bool CanExecute(object parameter)
 		{
-			return path != null;
+			return Context.SelectedFolder?.FullName != null;
 		}
 
-		public void Execute(object parameter)
+		public override void Execute(object parameter)
 		{
-			Process.Start(path);
+			Process.Start(Context.SelectedFolder.FullName);
 		}
-
-		public event EventHandler CanExecuteChanged;
-
-		protected virtual void OnCanExecuteChanged()
-		{
-			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		private readonly string path;
 	}
 }

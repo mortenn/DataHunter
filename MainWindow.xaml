@@ -162,7 +162,7 @@
 				</DataGrid.Columns>
 				<DataGrid.RowStyle>
 					<Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-						<EventSetter Event="MouseDoubleClick" Handler="EventSetter_OnHandler" />
+						<EventSetter Event="MouseDoubleClick" Handler="DataGrid_OnDoubleClick" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Scanning}" Value="True">
 								<Setter Property="TextBlock.FontStyle" Value="Italic" />

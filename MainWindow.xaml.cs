@@ -14,17 +14,23 @@ namespace DataHunter
 
 		private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-			((AppContext)DataContext).SelectedFolder = e.NewValue as DataContainer;
+			Select(e.NewValue as DataContainer);
 		}
 
 		private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
 		{
-			((AppContext) DataContext).SelectedFolder = ((Button) sender).DataContext as DataContainer;
+			Select(((DataGridRow)sender).DataContext);
 		}
 
-		private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e)
+		private void DataGrid_OnDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			((AppContext) DataContext).SelectedFolder = ((DataGridRow) sender).DataContext as DataContainer;
+			Select(((DataGridRow)sender).DataContext);
+		}
+
+		private void Select(object sender)
+		{
+			if(sender is DataContainer)
+				((AppContext)DataContext).SelectedFolder = (DataContainer)sender;
 		}
 	}
 }

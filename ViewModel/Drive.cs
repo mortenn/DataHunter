@@ -17,6 +17,8 @@ namespace DataHunter.ViewModel
 
 		public override List<DataContainer> Path => new List<DataContainer> { this };
 
+		public override bool IsVirtual => false;
+
 		protected override List<Folder> Scan()
 		{
 			return Info.RootDirectory.GetDirectories().Select(d => new Folder(d, this)).ToList();

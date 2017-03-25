@@ -46,7 +46,17 @@
 						</Style>
 					</TextBlock.Style>
 				</TextBlock>
-				<TextBlock Text="{Binding Info.Name}" />
+				<TextBlock Text="{Binding Info.Name}">
+					<TextBlock.Style>
+						<Style>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsVirtual}" Value="True">
+									<Setter Property="TextBlock.Opacity" Value="0.5" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBlock.Style>
+				</TextBlock>
 			</StackPanel>
 		</HierarchicalDataTemplate>
 
@@ -156,10 +166,13 @@
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Scanning}" Value="True">
 								<Setter Property="TextBlock.FontStyle" Value="Italic" />
-								<Setter Property="TextBlock.Opacity" Value="0.5"></Setter>
+								<Setter Property="TextBlock.Opacity" Value="0.5"/>
 							</DataTrigger>
 							<DataTrigger Binding="{Binding AccessDenied}" Value="True">
-								<Setter Property="TextBlock.Opacity" Value="0.5"></Setter>
+								<Setter Property="TextBlock.Opacity" Value="0.5"/>
+							</DataTrigger>
+							<DataTrigger Binding="{Binding IsVirtual}" Value="True">
+								<Setter Property="TextBlock.Opacity" Value="0.5" />
 							</DataTrigger>
 						</Style.Triggers>
 					</Style>

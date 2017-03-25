@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace DataHunter.ViewModel
 {
@@ -25,6 +26,8 @@ namespace DataHunter.ViewModel
 				return path;
 			}
 		}
+
+		public override bool IsVirtual => Info.Attributes.HasFlag(FileAttributes.ReparsePoint);
 
 		protected override List<Folder> Scan()
 		{

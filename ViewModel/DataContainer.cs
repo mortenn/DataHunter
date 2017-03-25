@@ -50,6 +50,8 @@ namespace DataHunter.ViewModel
 			}
 		}
 
+		public abstract bool IsVirtual { get; }
+
 		public List<Folder> Folders
 		{
 			get
@@ -84,7 +86,7 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(scanned || Scanning)
+				if(Scanned || Scanning)
 					return total_bytes;
 
 				Rescan();
@@ -96,7 +98,7 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(!scanned)
+				if(!Scanned)
 					bytes = FindBytes();
 				return bytes;
 			}
@@ -104,7 +106,7 @@ namespace DataHunter.ViewModel
 
 		public void Rescan()
 		{
-			scanned = false;
+			Scanned = false;
 			total_bytes = 0;
 			bytes = 0;
 			Scanning = true;
@@ -133,6 +135,8 @@ namespace DataHunter.ViewModel
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
+		protected bool Scanned;
+
 		private async Task<long> GetSize()
 		{
 			OnPropertyChanged(nameof(Scanning));
@@ -150,7 +154,7 @@ namespace DataHunter.ViewModel
 					total_bytes += await child;
 				}
 			}
-			scanned = true;
+			Scanned = true;
 			Scanning = false;
 			SizeChanged();
 			OnPropertyChanged(nameof(Scanning));
@@ -159,7 +163,10 @@ namespace DataHunter.ViewModel
 
 		private void SizeChanged()
 		{
-			total_bytes = Folders.Sum(f => f.Bytes ?? 0) + bytes;
+			var oldBytes = total_bytes;
+			total_bytes = Folders.Where(f => !f.IsVirtual).Sum(f => f.Bytes ?? 0) + bytes;
+			if(oldBytes == total_bytes)
+				return;
 			OnPropertyChanged(nameof(Bytes));
 			Parent?.SizeChanged();
 			AppContext?.Refresh();
@@ -168,7 +175,6 @@ namespace DataHunter.ViewModel
 		private List<Folder> folders;
 		private long bytes;
 		private long total_bytes;
-		private bool scanned;
 		private bool is_expanded;
 		private bool is_selected;
 	}

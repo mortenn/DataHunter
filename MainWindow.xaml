@@ -143,7 +143,7 @@
 				</ListBox.ItemsPanel>
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<Button Content="{Binding Info.Name}" Click="ButtonBase_OnClick" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="0" />
+						<Button Content="{Binding Info.Name}" Click="NavigateAction" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="0" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
@@ -162,7 +162,7 @@
 				</DataGrid.Columns>
 				<DataGrid.RowStyle>
 					<Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-						<EventSetter Event="MouseDoubleClick" Handler="DataGrid_OnDoubleClick" />
+						<EventSetter Event="MouseDoubleClick" Handler="NavigateAction" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Scanning}" Value="True">
 								<Setter Property="TextBlock.FontStyle" Value="Italic" />

@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0-windows</TargetFramework>
+		<OutputType>WinExe</OutputType>
+		<PublishUrl>publish\</PublishUrl>
+		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<UseWPF>true</UseWPF>
+		<ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup>
+		<AppDesigner Include="Properties\" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="WPFThemes.DarkBlend" Version="1.0.8" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="packages\WPFThemes.DarkBlend.1.0.8\content\Themes\LeftMarginMultiplierConverter.cs" />
+		<Compile Remove="packages\WPFThemes.DarkBlend.1.0.8\content\Themes\TreeViewItemExtensions.cs" />
+		<Page Remove="packages\WPFThemes.DarkBlend.1.0.8\content\Themes\Styles.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Data\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Core.csproj" />
+	</ItemGroup>
+</Project>

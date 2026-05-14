@@ -1,0 +1,44 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Color x:Key="WindowBackgroundColor">#F3F3F3</Color>
+	<Color x:Key="SurfaceColor">#FAFAFA</Color>
+	<Color x:Key="SurfaceAltColor">#F7F7F7</Color>
+	<Color x:Key="BorderColor">#DADADA</Color>
+	<Color x:Key="ForegroundColor">#1A1A1A</Color>
+	<Color x:Key="SecondaryForegroundColor">#666666</Color>
+	<Color x:Key="AccentColor">#0078D4</Color>
+	<Color x:Key="AccentSoftColor">#D8EBFA</Color>
+	<Color x:Key="SelectionColor">#CCE8FF</Color>
+	<Color x:Key="SelectionInactiveColor">#E8F3FC</Color>
+	<Color x:Key="HoverColor">#EDEDED</Color>
+	<Color x:Key="ScrollThumbColor">#8A8A8A</Color>
+	<Color x:Key="ScrollThumbHoverColor">#6F6F6F</Color>
+	<Color x:Key="SelectedColor">#DDEBFA</Color>
+	<Color x:Key="SunColor">#F9A825</Color>
+	<Color x:Key="MoonColor">#5B6FD6</Color>
+	<Color x:Key="ToggleTrackColor">#2A2A2A</Color>
+
+	<SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}" />
+	<SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
+	<SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
+	<SolidColorBrush x:Key="DataGridBackgroundBrush" Color="{StaticResource SurfaceColor}" />
+	<SolidColorBrush x:Key="ScrollViewerBackground" Color="{StaticResource SurfaceColor}" />
+	<SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="{StaticResource SurfaceAltColor}" />
+	<SolidColorBrush x:Key="DataGridHeaderBorderBrush" Color="{StaticResource BorderColor}" />
+	<SolidColorBrush x:Key="DataGridRowBorderBrush" Color="{StaticResource BorderColor}" />
+	<SolidColorBrush x:Key="DataGridRowBackgroundBrush" Color="{StaticResource SurfaceColor}" />
+	<SolidColorBrush x:Key="DataGridRowSelectedBrush" Color="{StaticResource SelectedColor}" />
+	<SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource ForegroundColor}" />
+	<SolidColorBrush x:Key="SecondaryForegroundBrush" Color="{StaticResource SecondaryForegroundColor}" />
+	<SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+	<SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource AccentSoftColor}" />
+	<SolidColorBrush x:Key="SelectionBrush" Color="{StaticResource SelectionColor}" />
+	<SolidColorBrush x:Key="SelectionInactiveBrush" Color="{StaticResource SelectionInactiveColor}" />
+	<SolidColorBrush x:Key="HoverBrush" Color="{StaticResource HoverColor}" />
+	<SolidColorBrush x:Key="ScrollThumbBrush" Color="{StaticResource ScrollThumbColor}" />
+	<SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="{StaticResource ScrollThumbHoverColor}" />
+	<SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+	<SolidColorBrush x:Key="SunBrush" Color="{StaticResource SunColor}" />
+	<SolidColorBrush x:Key="MoonBrush" Color="{StaticResource MoonColor}" />
+	<SolidColorBrush x:Key="ToggleTrackBrush" Color="{StaticResource ToggleTrackColor}" />
+</ResourceDictionary>

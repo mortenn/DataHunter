@@ -1,0 +1,5 @@
+* text=auto
+
+# CSharpier is configured for LF and checks line endings in Release builds.
+*.cs text eol=lf
+*.slnx text eol=lf

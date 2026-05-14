@@ -9,7 +9,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Description>Data usage tool</Description>
     <Company>Morten Nilsen</Company>
-    <Copyright>Copyright © 2017</Copyright>
+    <Copyright>Copyright © 2017-2026 Morten Nilsen</Copyright>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>

@@ -23,19 +23,26 @@ namespace DataHunter.View
 			nameof(Slices),
 			typeof(IEnumerable<PieSlice>),
 			typeof(PieChart),
-			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender)
+		);
 
 		public static readonly DependencyProperty HighlightedSliceProperty = DependencyProperty.Register(
 			nameof(HighlightedSlice),
 			typeof(PieSlice),
 			typeof(PieChart),
-			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, HighlightedSliceChanged));
+			new FrameworkPropertyMetadata(
+				null,
+				FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+				HighlightedSliceChanged
+			)
+		);
 
 		private static readonly DependencyProperty PopoutProgressProperty = DependencyProperty.Register(
 			nameof(PopoutProgress),
 			typeof(double),
 			typeof(PieChart),
-			new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsRender));
+			new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsRender)
+		);
 
 		public event EventHandler<PieSliceClickedEventArgs> SliceClicked;
 
@@ -63,7 +70,7 @@ namespace DataHunter.View
 			renderedSlices.Clear();
 
 			var slices = Slices?.Where(s => s.Bytes > 0).ToList();
-			if(slices == null || slices.Count == 0)
+			if (slices == null || slices.Count == 0)
 			{
 				DrawEmptyState(drawingContext);
 				return;
@@ -71,18 +78,20 @@ namespace DataHunter.View
 
 			var total = slices.Sum(s => s.Bytes);
 			var radius = Math.Max(0, Math.Min(ActualWidth, ActualHeight) / 2 - 4);
-			if(radius <= 0)
+			if (radius <= 0)
 				return;
 
 			var center = new Point(ActualWidth / 2, ActualHeight / 2);
 			var rect = new Rect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
 			var startAngle = -90.0;
 
-			foreach(var slice in slices)
+			foreach (var slice in slices)
 			{
 				var sweepAngle = 360.0 * slice.Bytes / total;
 				var highlighted = IsHighlighted(slice);
-				var offset = highlighted ? PointOnCircle(new Point(), 8 * PopoutProgress, startAngle + sweepAngle / 2) : new Point();
+				var offset = highlighted
+					? PointOnCircle(new Point(), 8 * PopoutProgress, startAngle + sweepAngle / 2)
+					: new Point();
 				var sliceCenter = new Point(center.X + offset.X, center.Y + offset.Y);
 				var sliceRect = new Rect(rect.X + offset.X, rect.Y + offset.Y, rect.Width, rect.Height);
 				DrawSlice(drawingContext, sliceCenter, sliceRect, startAngle, sweepAngle, slice.Brush, highlighted);
@@ -95,7 +104,7 @@ namespace DataHunter.View
 		{
 			base.OnMouseMove(e);
 			var slice = HitTestSlice(e.GetPosition(this));
-			if(!IsSameSlice(slice, HighlightedSlice))
+			if (!IsSameSlice(slice, HighlightedSlice))
 				HighlightedSlice = slice;
 			Cursor = slice?.Source == null ? Cursors.Arrow : Cursors.Hand;
 		}
@@ -112,7 +121,7 @@ namespace DataHunter.View
 			base.OnMouseLeftButtonUp(e);
 			Focus();
 			var slice = HitTestSlice(e.GetPosition(this));
-			if(slice?.Source == null)
+			if (slice?.Source == null)
 				return;
 
 			SliceClicked?.Invoke(this, new PieSliceClickedEventArgs(slice));
@@ -122,31 +131,31 @@ namespace DataHunter.View
 		protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
 		{
 			base.OnGotKeyboardFocus(e);
-			if(HighlightedSlice == null)
+			if (HighlightedSlice == null)
 				MoveHighlight(1);
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			if(e.Key == Key.Right || e.Key == Key.Down)
+			if (e.Key == Key.Right || e.Key == Key.Down)
 			{
 				MoveHighlight(1);
 				e.Handled = true;
 				return;
 			}
 
-			if(e.Key == Key.Left || e.Key == Key.Up)
+			if (e.Key == Key.Left || e.Key == Key.Up)
 			{
 				MoveHighlight(-1);
 				e.Handled = true;
 				return;
 			}
 
-			if(e.Key != Key.Enter && e.Key != Key.Space)
+			if (e.Key != Key.Enter && e.Key != Key.Space)
 				return;
 
-			if(HighlightedSlice?.Source == null)
+			if (HighlightedSlice?.Source == null)
 				return;
 
 			SliceClicked?.Invoke(this, new PieSliceClickedEventArgs(HighlightedSlice));
@@ -156,7 +165,7 @@ namespace DataHunter.View
 		private void MoveHighlight(int direction)
 		{
 			var slices = Slices?.Where(s => s.Bytes > 0).ToList();
-			if(slices == null || slices.Count == 0)
+			if (slices == null || slices.Count == 0)
 				return;
 
 			var currentIndex = HighlightedSlice == null ? -1 : slices.FindIndex(s => IsSameSlice(s, HighlightedSlice));
@@ -169,24 +178,33 @@ namespace DataHunter.View
 			return new PieChartAutomationPeer(this);
 		}
 
-		private static void DrawEmptyState(DrawingContext drawingContext)
-		{
-		}
+		private static void DrawEmptyState(DrawingContext drawingContext) { }
 
-		private static void HighlightedSliceChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+		private static void HighlightedSliceChanged(
+			DependencyObject dependencyObject,
+			DependencyPropertyChangedEventArgs e
+		)
 		{
 			var chart = (PieChart)dependencyObject;
 			var animation = new DoubleAnimation(e.NewValue == null ? 0.0 : 1.0, TimeSpan.FromMilliseconds(120))
 			{
-				EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+				EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
 			};
 			chart.BeginAnimation(PopoutProgressProperty, animation);
 		}
 
-		private static void DrawSlice(DrawingContext drawingContext, Point center, Rect rect, double startAngle, double sweepAngle, Brush brush, bool highlighted)
+		private static void DrawSlice(
+			DrawingContext drawingContext,
+			Point center,
+			Rect rect,
+			double startAngle,
+			double sweepAngle,
+			Brush brush,
+			bool highlighted
+		)
 		{
 			var pen = highlighted ? new Pen(Brushes.White, 1.5) : null;
-			if(sweepAngle >= 359.99)
+			if (sweepAngle >= 359.99)
 			{
 				drawingContext.DrawEllipse(brush, pen, center, rect.Width / 2, rect.Height / 2);
 				return;
@@ -195,11 +213,19 @@ namespace DataHunter.View
 			var start = PointOnCircle(center, rect.Width / 2, startAngle);
 			var end = PointOnCircle(center, rect.Width / 2, startAngle + sweepAngle);
 			var geometry = new StreamGeometry();
-			using(var context = geometry.Open())
+			using (var context = geometry.Open())
 			{
 				context.BeginFigure(center, true, true);
 				context.LineTo(start, true, false);
-				context.ArcTo(end, new Size(rect.Width / 2, rect.Height / 2), 0, sweepAngle > 180, SweepDirection.Clockwise, true, false);
+				context.ArcTo(
+					end,
+					new Size(rect.Width / 2, rect.Height / 2),
+					0,
+					sweepAngle > 180,
+					SweepDirection.Clockwise,
+					true,
+					false
+				);
 			}
 
 			geometry.Freeze();
@@ -208,18 +234,18 @@ namespace DataHunter.View
 
 		private PieSlice HitTestSlice(Point point)
 		{
-			foreach(var slice in renderedSlices)
+			foreach (var slice in renderedSlices)
 			{
 				var dx = point.X - slice.Center.X;
 				var dy = point.Y - slice.Center.Y;
-				if(Math.Sqrt(dx * dx + dy * dy) > slice.Radius)
+				if (Math.Sqrt(dx * dx + dy * dy) > slice.Radius)
 					continue;
 
 				var angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
-				if(angle < -90)
+				if (angle < -90)
 					angle += 360;
 
-				if(angle >= slice.StartAngle && angle <= slice.StartAngle + slice.SweepAngle)
+				if (angle >= slice.StartAngle && angle <= slice.StartAngle + slice.SweepAngle)
 					return slice.Slice;
 			}
 
@@ -233,10 +259,10 @@ namespace DataHunter.View
 
 		private static bool IsSameSlice(PieSlice left, PieSlice right)
 		{
-			if(left == null || right == null)
+			if (left == null || right == null)
 				return false;
 
-			if(left.Source != null || right.Source != null)
+			if (left.Source != null || right.Source != null)
 				return ReferenceEquals(left.Source, right.Source);
 
 			return string.Equals(left.Name, right.Name, StringComparison.Ordinal);
@@ -272,9 +298,8 @@ namespace DataHunter.View
 
 		private class PieChartAutomationPeer : FrameworkElementAutomationPeer
 		{
-			public PieChartAutomationPeer(PieChart owner) : base(owner)
-			{
-			}
+			public PieChartAutomationPeer(PieChart owner)
+				: base(owner) { }
 
 			protected override string GetClassNameCore()
 			{

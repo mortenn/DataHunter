@@ -10,17 +10,21 @@ namespace DataHunter.View
 	public class FormatKbSizeConverter : IValueConverter
 	{
 		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-		private static extern long StrFormatByteSizeW(long qdw, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszBuf, int cchBuf);
+		private static extern long StrFormatByteSizeW(
+			long qdw,
+			[MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszBuf,
+			int cchBuf
+		);
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if(value == null)
+			if (value == null)
 				return string.Empty;
 
 			var number = System.Convert.ToInt64(value);
-			if(number == 1)
+			if (number == 1)
 				return "1 B";
-			if(number < 1024)
+			if (number < 1024)
 				return $"{number}  B";
 
 			var sb = new StringBuilder(32);

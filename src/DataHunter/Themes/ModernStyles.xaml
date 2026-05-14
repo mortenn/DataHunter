@@ -1,5 +1,6 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style TargetType="{x:Type Window}">
 		<Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
@@ -22,15 +23,14 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
-					<Border x:Name="Root"
-					        Background="{TemplateBinding Background}"
-					        BorderBrush="{TemplateBinding BorderBrush}"
-					        BorderThickness="{TemplateBinding BorderThickness}"
-					        CornerRadius="6"
-					        SnapsToDevicePixels="True">
-						<ContentPresenter HorizontalAlignment="Center"
-						                  VerticalAlignment="Center"
-						                  Margin="{TemplateBinding Padding}" />
+					<Border
+						x:Name="Root"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="6"
+						SnapsToDevicePixels="True">
+						<ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 					</Border>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">
@@ -56,7 +56,7 @@
 		<Setter Property="Padding" Value="6" />
 	</Style>
 
-	<Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+	<Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
 		<Setter Property="Padding" Value="4,2" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -72,24 +72,24 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition />
 						</Grid.RowDefinitions>
-						<ToggleButton x:Name="Expander"
-						              Width="18"
-						              Height="22"
-						              IsChecked="{Binding IsExpanded,RelativeSource={RelativeSource TemplatedParent}}"
-						              ClickMode="Press"
-						              Background="Transparent"
-						              BorderThickness="0"
-						              Foreground="{DynamicResource SecondaryForegroundBrush}">
+						<ToggleButton
+							x:Name="Expander"
+							Width="18"
+							Height="22"
+							Background="Transparent"
+							BorderThickness="0"
+							ClickMode="Press"
+							Foreground="{DynamicResource SecondaryForegroundBrush}"
+							IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
 							<Path x:Name="ExpanderGlyph" Data="M 0 0 L 4 4 L 0 8 Z" Fill="{DynamicResource SecondaryForegroundBrush}" />
 						</ToggleButton>
-						<Border x:Name="ContentBorder"
-						        Grid.Column="1"
-						        Background="Transparent"
-						        CornerRadius="4"
-						        Padding="{TemplateBinding Padding}">
-							<ContentPresenter x:Name="PART_Header"
-							                  ContentSource="Header"
-							                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+						<Border
+							x:Name="ContentBorder"
+							Grid.Column="1"
+							Padding="{TemplateBinding Padding}"
+							Background="Transparent"
+							CornerRadius="4">
+							<ContentPresenter x:Name="PART_Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" ContentSource="Header" />
 						</Border>
 						<ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" />
 					</Grid>
@@ -155,11 +155,12 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Thumb}">
-					<Border x:Name="ThumbBorder"
-					        Background="{DynamicResource ScrollThumbBrush}"
-					        CornerRadius="3"
-					        Margin="3,4"
-					        Opacity="0.65" />
+					<Border
+						x:Name="ThumbBorder"
+						Margin="3,4"
+						Background="{DynamicResource ScrollThumbBrush}"
+						CornerRadius="3"
+						Opacity="0.65" />
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">
 							<Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollThumbHoverBrush}" />
@@ -197,19 +198,21 @@
 				<RowDefinition />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<Border x:Name="Rail"
-			        Grid.RowSpan="3"
-			        Background="{DynamicResource SurfaceAltBrush}"
-			        CornerRadius="7"
-			        Opacity="0"
-			        Margin="1" />
-			<RepeatButton x:Name="DecreaseButton"
-			              Content="▲"
-			              Command="{x:Static ScrollBar.LineUpCommand}"
-			              FontSize="8"
-			              Height="14"
-			              Opacity="0"
-			              Style="{StaticResource ScrollBarLineButtonStyle}" />
+			<Border
+				x:Name="Rail"
+				Grid.RowSpan="3"
+				Margin="1"
+				Background="{DynamicResource SurfaceAltBrush}"
+				CornerRadius="7"
+				Opacity="0" />
+			<RepeatButton
+				x:Name="DecreaseButton"
+				Height="14"
+				Command="{x:Static ScrollBar.LineUpCommand}"
+				Content="▲"
+				FontSize="8"
+				Opacity="0"
+				Style="{StaticResource ScrollBarLineButtonStyle}" />
 			<Track x:Name="PART_Track" Grid.Row="1" IsDirectionReversed="True">
 				<Track.DecreaseRepeatButton>
 					<RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarLineButtonStyle}" />
@@ -221,14 +224,15 @@
 					<RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarLineButtonStyle}" />
 				</Track.IncreaseRepeatButton>
 			</Track>
-			<RepeatButton x:Name="IncreaseButton"
-			              Grid.Row="2"
-			              Content="▼"
-			              Command="{x:Static ScrollBar.LineDownCommand}"
-			              FontSize="8"
-			              Height="14"
-			              Opacity="0"
-			              Style="{StaticResource ScrollBarLineButtonStyle}" />
+			<RepeatButton
+				x:Name="IncreaseButton"
+				Grid.Row="2"
+				Height="14"
+				Command="{x:Static ScrollBar.LineDownCommand}"
+				Content="▼"
+				FontSize="8"
+				Opacity="0"
+				Style="{StaticResource ScrollBarLineButtonStyle}" />
 		</Grid>
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsMouseOver" Value="True">
@@ -246,19 +250,21 @@
 				<ColumnDefinition />
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
-			<Border x:Name="Rail"
-			        Grid.ColumnSpan="3"
-			        Background="{DynamicResource SurfaceAltBrush}"
-			        CornerRadius="7"
-			        Opacity="0"
-			        Margin="1" />
-			<RepeatButton x:Name="DecreaseButton"
-			              Content="◀"
-			              Command="{x:Static ScrollBar.LineLeftCommand}"
-			              FontSize="8"
-			              Opacity="0"
-			              Style="{StaticResource ScrollBarLineButtonStyle}"
-			              Width="14" />
+			<Border
+				x:Name="Rail"
+				Grid.ColumnSpan="3"
+				Margin="1"
+				Background="{DynamicResource SurfaceAltBrush}"
+				CornerRadius="7"
+				Opacity="0" />
+			<RepeatButton
+				x:Name="DecreaseButton"
+				Width="14"
+				Command="{x:Static ScrollBar.LineLeftCommand}"
+				Content="◀"
+				FontSize="8"
+				Opacity="0"
+				Style="{StaticResource ScrollBarLineButtonStyle}" />
 			<Track x:Name="PART_Track" Grid.Column="1">
 				<Track.DecreaseRepeatButton>
 					<RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ScrollBarLineButtonStyle}" />
@@ -270,14 +276,15 @@
 					<RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ScrollBarLineButtonStyle}" />
 				</Track.IncreaseRepeatButton>
 			</Track>
-			<RepeatButton x:Name="IncreaseButton"
-			              Grid.Column="2"
-			              Content="▶"
-			              Command="{x:Static ScrollBar.LineRightCommand}"
-			              FontSize="8"
-			              Opacity="0"
-			              Style="{StaticResource ScrollBarLineButtonStyle}"
-			              Width="14" />
+			<RepeatButton
+				x:Name="IncreaseButton"
+				Grid.Column="2"
+				Width="14"
+				Command="{x:Static ScrollBar.LineRightCommand}"
+				Content="▶"
+				FontSize="8"
+				Opacity="0"
+				Style="{StaticResource ScrollBarLineButtonStyle}" />
 		</Grid>
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsMouseOver" Value="True">
@@ -311,9 +318,9 @@
 		</Style.Triggers>
 	</Style>
 
-	<Style x:Key="VerticalScrollBarStyle" TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource {x:Type ScrollBar}}" />
+	<Style x:Key="VerticalScrollBarStyle" BasedOn="{StaticResource {x:Type ScrollBar}}" TargetType="{x:Type ScrollBar}" />
 
-	<Style x:Key="HorisontalScrollBarStyle" TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource {x:Type ScrollBar}}" />
+	<Style x:Key="HorisontalScrollBarStyle" BasedOn="{StaticResource {x:Type ScrollBar}}" TargetType="{x:Type ScrollBar}" />
 
 	<Style TargetType="{x:Type DataGridColumnHeader}">
 		<Setter Property="Background" Value="{DynamicResource DataGridHeaderBackgroundBrush}" />
@@ -332,7 +339,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type DataGridCell}">
-					<Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+					<Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
 						<ContentPresenter VerticalAlignment="Center" />
 					</Border>
 				</ControlTemplate>
@@ -340,7 +347,7 @@
 		</Setter>
 	</Style>
 
-	<Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
+	<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
 		<Setter Property="Background" Value="{DynamicResource DataGridRowBackgroundBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
 		<Setter Property="MinHeight" Value="24" />

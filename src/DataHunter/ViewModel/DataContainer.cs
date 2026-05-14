@@ -31,13 +31,10 @@ namespace DataHunter.ViewModel
 
 		public bool HasActiveScan
 		{
-			get
-			{
-				return hasActiveScan;
-			}
+			get { return hasActiveScan; }
 			set
 			{
-				if(hasActiveScan == value)
+				if (hasActiveScan == value)
 					return;
 
 				hasActiveScan = value;
@@ -47,10 +44,7 @@ namespace DataHunter.ViewModel
 
 		public bool IsExpanded
 		{
-			get
-			{
-				return is_expanded;
-			}
+			get { return is_expanded; }
 			set
 			{
 				is_expanded = value;
@@ -60,10 +54,7 @@ namespace DataHunter.ViewModel
 
 		public bool IsSelected
 		{
-			get
-			{
-				return is_selected;
-			}
+			get { return is_selected; }
 			set
 			{
 				is_selected = value;
@@ -77,13 +68,17 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(folders != null)
+				if (folders != null)
 					return folders;
 
 				var childFolders = Cache.GetOrLoadChildren(FullName).Select(GetOrCreateFolder).ToList();
-				foreach(var folder in folderCache.Values.ToList())
+				foreach (var folder in folderCache.Values.ToList())
 				{
-					if(!childFolders.Any(existing => string.Equals(existing.FullName, folder.FullName, StringComparison.OrdinalIgnoreCase)))
+					if (
+						!childFolders.Any(existing =>
+							string.Equals(existing.FullName, folder.FullName, StringComparison.OrdinalIgnoreCase)
+						)
+					)
 						childFolders.Add(folder);
 				}
 				folders = childFolders;
@@ -95,10 +90,10 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(ScanEntry.Canceled && !ScanEntry.Scanned)
+				if (ScanEntry.Canceled && !ScanEntry.Scanned)
 					return null;
 
-				if(ScanEntry.Scanned || ScanEntry.Scanning)
+				if (ScanEntry.Scanned || ScanEntry.Scanning)
 					return CurrentKnownTotalBytes;
 
 				StartScan();
@@ -110,10 +105,10 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(ScanEntry.Canceled && !ScanEntry.Scanned)
+				if (ScanEntry.Canceled && !ScanEntry.Scanned)
 					return null;
 
-				if(ScanEntry.Scanned || ScanEntry.Scanning)
+				if (ScanEntry.Scanned || ScanEntry.Scanning)
 					return ScanEntry.FileBytes;
 
 				StartScan();
@@ -127,14 +122,15 @@ namespace DataHunter.ViewModel
 
 		public long OwnFileBytes => ScanEntry.FileBytes;
 
-		public bool HasKnownSize => ScanEntry.Scanned || ScanEntry.Scanning || ScanEntry.TotalBytes > 0 || ScanEntry.FileBytes > 0;
+		public bool HasKnownSize =>
+			ScanEntry.Scanned || ScanEntry.Scanning || ScanEntry.TotalBytes > 0 || ScanEntry.FileBytes > 0;
 
 		public double DiskSharePercent
 		{
 			get
 			{
 				var totalSize = RootDriveTotalSize;
-				if(totalSize <= 0)
+				if (totalSize <= 0)
 					return 0;
 
 				return 100 * (double)CurrentKnownTotalBytes / totalSize;
@@ -145,11 +141,11 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(!HasReliableShareOfParent)
+				if (!HasReliableShareOfParent)
 					return 0;
 
 				var parentBytes = Parent?.CurrentKnownChildBytes ?? 0;
-				if(parentBytes <= 0)
+				if (parentBytes <= 0)
 					return 0;
 
 				return Math.Min(1, Math.Max(0, (double)CurrentKnownTotalBytes / parentBytes));
@@ -161,7 +157,8 @@ namespace DataHunter.ViewModel
 			OnPropertyChanged(nameof(ShareOfParent));
 		}
 
-		public bool HasReliableShareOfParent => Parent != null && Parent.IsScanned && Parent.LoadedChildCount <= ShareNotificationLimit;
+		public bool HasReliableShareOfParent =>
+			Parent != null && Parent.IsScanned && Parent.LoadedChildCount <= ShareNotificationLimit;
 
 		public void Rescan()
 		{
@@ -196,9 +193,12 @@ namespace DataHunter.ViewModel
 
 		private void StartScan()
 		{
-			Cache.ScanAsync(FullName).ContinueWith(
-				task => DataHunter.App.ShowException(task.Exception.GetBaseException()),
-				TaskContinuationOptions.OnlyOnFaulted);
+			Cache
+				.ScanAsync(FullName)
+				.ContinueWith(
+					task => DataHunter.App.ShowException(task.Exception.GetBaseException()),
+					TaskContinuationOptions.OnlyOnFaulted
+				);
 		}
 
 		protected abstract Folder CreateFolder(FolderScanEntry entry);
@@ -217,12 +217,12 @@ namespace DataHunter.ViewModel
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;
-			if(handler == null)
+			if (handler == null)
 				return;
 
 			var args = new PropertyChangedEventArgs(propertyName);
 			var dispatcher = Application.Current?.Dispatcher;
-			if(dispatcher != null && !dispatcher.CheckAccess())
+			if (dispatcher != null && !dispatcher.CheckAccess())
 				dispatcher.BeginInvoke(new Action(() => handler(this, args)));
 			else
 				handler(this, args);
@@ -230,7 +230,7 @@ namespace DataHunter.ViewModel
 
 		private void ScanEntryOnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
-			switch(args.PropertyName)
+			switch (args.PropertyName)
 			{
 				case nameof(FolderScanEntry.AccessDenied):
 					OnPropertyChanged(nameof(AccessDenied));
@@ -287,19 +287,19 @@ namespace DataHunter.ViewModel
 
 		private void ChildFolderOnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
-			if(args.PropertyName == nameof(Bytes) || args.PropertyName == nameof(SortBytes))
+			if (args.PropertyName == nameof(Bytes) || args.PropertyName == nameof(SortBytes))
 				ScheduleSizePropertiesChanged();
 		}
 
 		private void NotifyChildSharesChanged()
 		{
-			if(folders == null)
+			if (folders == null)
 				return;
 
-			if(folders.Count > ShareNotificationLimit)
+			if (folders.Count > ShareNotificationLimit)
 				return;
 
-			foreach(var folder in folders)
+			foreach (var folder in folders)
 			{
 				folder.OnPropertyChanged(nameof(HasReliableShareOfParent));
 				folder.OnPropertyChanged(nameof(ShareOfParent));
@@ -308,46 +308,46 @@ namespace DataHunter.ViewModel
 
 		private void ScheduleSizePropertiesChanged()
 		{
-			if(Interlocked.Exchange(ref sizeNotificationScheduled, 1) == 1)
+			if (Interlocked.Exchange(ref sizeNotificationScheduled, 1) == 1)
 				return;
 
 			var dispatcher = Application.Current?.Dispatcher;
-			if(dispatcher == null)
+			if (dispatcher == null)
 			{
 				FireSizePropertiesChanged();
 				return;
 			}
 
-			dispatcher.BeginInvoke(new Action(() =>
-			{
-				if(sizeNotificationTimer == null)
+			dispatcher.BeginInvoke(
+				new Action(() =>
 				{
-					sizeNotificationTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
-					sizeNotificationTimer.Tick += (sender, args) =>
+					if (sizeNotificationTimer == null)
 					{
-						sizeNotificationTimer.Stop();
-						FireSizePropertiesChanged();
-					};
-				}
+						sizeNotificationTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+						sizeNotificationTimer.Tick += (sender, args) =>
+						{
+							sizeNotificationTimer.Stop();
+							FireSizePropertiesChanged();
+						};
+					}
 
-				sizeNotificationTimer.Start();
-			}));
+					sizeNotificationTimer.Start();
+				})
+			);
 		}
 
 		private long CurrentKnownChildBytes
 		{
-			get
-			{
-				return ScanEntry.Children.Where(f => !f.IsVirtual).Sum(f => f.TotalBytes);
-			}
+			get { return ScanEntry.Children.Where(f => !f.IsVirtual).Sum(f => f.TotalBytes); }
 		}
 
-		private long CurrentKnownTotalBytes => Math.Max(ScanEntry.TotalBytes, ScanEntry.FileBytes + CurrentKnownChildBytes);
+		private long CurrentKnownTotalBytes =>
+			Math.Max(ScanEntry.TotalBytes, ScanEntry.FileBytes + CurrentKnownChildBytes);
 
 		private Folder GetOrCreateFolder(FolderScanEntry entry)
 		{
 			Folder folder;
-			if(folderCache.TryGetValue(entry.FullName, out folder))
+			if (folderCache.TryGetValue(entry.FullName, out folder))
 				return folder;
 
 			folder = CreateFolder(entry);
@@ -361,7 +361,7 @@ namespace DataHunter.ViewModel
 			get
 			{
 				var current = this;
-				while(current.Parent != null)
+				while (current.Parent != null)
 					current = current.Parent;
 
 				var drive = current as Drive;
@@ -374,9 +374,9 @@ namespace DataHunter.ViewModel
 			get
 			{
 				var value = Cache.GetOrCreate(FullName);
-				if(scanEntry != value)
+				if (scanEntry != value)
 				{
-					if(scanEntry != null)
+					if (scanEntry != null)
 						scanEntry.PropertyChanged -= ScanEntryOnPropertyChanged;
 
 					scanEntry = value;
@@ -388,7 +388,9 @@ namespace DataHunter.ViewModel
 		}
 
 		private List<Folder> folders;
-		private readonly Dictionary<string, Folder> folderCache = new Dictionary<string, Folder>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, Folder> folderCache = new Dictionary<string, Folder>(
+			StringComparer.OrdinalIgnoreCase
+		);
 		private FolderScanEntry scanEntry;
 		private DispatcherTimer sizeNotificationTimer;
 		private int sizeNotificationScheduled;

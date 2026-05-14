@@ -11,7 +11,7 @@ namespace DataHunter.View
 	{
 		System,
 		Light,
-		Dark
+		Dark,
 	}
 
 	public class ThemeManager : IDisposable
@@ -40,13 +40,10 @@ namespace DataHunter.View
 
 		public AppThemeMode Mode
 		{
-			get
-			{
-				return mode;
-			}
+			get { return mode; }
 			set
 			{
-				if(mode == value)
+				if (mode == value)
 					return;
 
 				mode = value;
@@ -63,15 +60,20 @@ namespace DataHunter.View
 		{
 			var dictionaries = application.Resources.MergedDictionaries;
 			var oldTheme = dictionaries.FirstOrDefault(IsModernThemeDictionary);
-			if(oldTheme != null)
+			if (oldTheme != null)
 				dictionaries.Remove(oldTheme);
 
-			dictionaries.Add(new ResourceDictionary
-			{
-				Source = new Uri(isLightTheme ? "Themes/ModernLight.xaml" : "Themes/ModernDark.xaml", UriKind.Relative)
-			});
+			dictionaries.Add(
+				new ResourceDictionary
+				{
+					Source = new Uri(
+						isLightTheme ? "Themes/ModernLight.xaml" : "Themes/ModernDark.xaml",
+						UriKind.Relative
+					),
+				}
+			);
 
-			foreach(Window window in application.Windows)
+			foreach (Window window in application.Windows)
 				ApplyTitleBar(window, !isLightTheme);
 
 			ThemeChanged?.Invoke(this, EventArgs.Empty);
@@ -79,11 +81,11 @@ namespace DataHunter.View
 
 		private static void ApplyTitleBar(Window window, bool useDarkMode)
 		{
-			if(window == null)
+			if (window == null)
 				return;
 
 			var handle = new WindowInteropHelper(window).Handle;
-			if(handle == IntPtr.Zero)
+			if (handle == IntPtr.Zero)
 				return;
 
 			var value = useDarkMode ? 1 : 0;
@@ -94,7 +96,11 @@ namespace DataHunter.View
 		{
 			try
 			{
-				using(var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+				using (
+					var key = Registry.CurrentUser.OpenSubKey(
+						@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+					)
+				)
 				{
 					return Convert.ToInt32(key?.GetValue("AppsUseLightTheme", 1)) != 0;
 				}
@@ -108,15 +114,19 @@ namespace DataHunter.View
 		private static bool IsModernThemeDictionary(ResourceDictionary dictionary)
 		{
 			var source = dictionary.Source?.OriginalString;
-			return source != null && (source.EndsWith("ModernLight.xaml", StringComparison.OrdinalIgnoreCase) || source.EndsWith("ModernDark.xaml", StringComparison.OrdinalIgnoreCase));
+			return source != null
+				&& (
+					source.EndsWith("ModernLight.xaml", StringComparison.OrdinalIgnoreCase)
+					|| source.EndsWith("ModernDark.xaml", StringComparison.OrdinalIgnoreCase)
+				);
 		}
 
 		private void SystemEventsOnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
 		{
-			if(mode != AppThemeMode.System)
+			if (mode != AppThemeMode.System)
 				return;
 
-			if(e.Category != UserPreferenceCategory.General && e.Category != UserPreferenceCategory.Color)
+			if (e.Category != UserPreferenceCategory.General && e.Category != UserPreferenceCategory.Color)
 				return;
 
 			application.Dispatcher.BeginInvoke(new Action(Apply));
@@ -124,7 +134,7 @@ namespace DataHunter.View
 
 		private bool ResolveLightTheme()
 		{
-			switch(mode)
+			switch (mode)
 			{
 				case AppThemeMode.Light:
 					return true;
@@ -138,7 +148,12 @@ namespace DataHunter.View
 		private const int DwmWindowAttributeUseImmersiveDarkMode = 20;
 
 		[DllImport("dwmapi.dll")]
-		private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int attributeValue, int attributeSize);
+		private static extern int DwmSetWindowAttribute(
+			IntPtr hwnd,
+			int attribute,
+			ref int attributeValue,
+			int attributeSize
+		);
 
 		private readonly Application application;
 		private AppThemeMode mode = AppThemeMode.System;

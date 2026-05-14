@@ -28,7 +28,7 @@ namespace DataHunter.View
 				Text = summary,
 				TextWrapping = TextWrapping.Wrap,
 				Margin = new Thickness(0, 0, 0, 10),
-				FontWeight = FontWeights.SemiBold
+				FontWeight = FontWeights.SemiBold,
 			};
 			Grid.SetRow(summaryText, 0);
 			root.Children.Add(summaryText);
@@ -41,7 +41,7 @@ namespace DataHunter.View
 				AcceptsTab = true,
 				TextWrapping = TextWrapping.NoWrap,
 				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
 			};
 			Grid.SetRow(detailsText, 1);
 			root.Children.Add(detailsText);
@@ -50,14 +50,14 @@ namespace DataHunter.View
 			{
 				Orientation = Orientation.Horizontal,
 				HorizontalAlignment = HorizontalAlignment.Right,
-				Margin = new Thickness(0, 10, 0, 0)
+				Margin = new Thickness(0, 10, 0, 0),
 			};
 
 			var copyButton = new Button
 			{
 				Content = "Copy details",
 				MinWidth = 100,
-				Margin = new Thickness(0, 0, 8, 0)
+				Margin = new Thickness(0, 0, 8, 0),
 			};
 			copyButton.Click += (sender, args) => Clipboard.SetText(details);
 			buttons.Children.Add(copyButton);
@@ -66,7 +66,7 @@ namespace DataHunter.View
 			{
 				Content = "Close",
 				IsDefault = true,
-				MinWidth = 80
+				MinWidth = 80,
 			};
 			closeButton.Click += (sender, args) => Close();
 			buttons.Children.Add(closeButton);

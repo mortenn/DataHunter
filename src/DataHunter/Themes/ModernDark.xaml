@@ -1,5 +1,6 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Color x:Key="WindowBackgroundColor">#202020</Color>
 	<Color x:Key="SurfaceColor">#202020</Color>
 	<Color x:Key="SurfaceAltColor">#252525</Color>

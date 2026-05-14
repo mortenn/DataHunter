@@ -36,7 +36,7 @@ namespace DataHunter
 		public static void ShowException(Exception exception)
 		{
 			var dispatcher = Current?.Dispatcher;
-			if(dispatcher == null || dispatcher.CheckAccess())
+			if (dispatcher == null || dispatcher.CheckAccess())
 				ShowExceptionDialog(exception);
 			else
 				dispatcher.BeginInvoke(new Action(() => ShowExceptionDialog(exception)));
@@ -68,29 +68,29 @@ namespace DataHunter
 
 		private static void ShowExceptionDialog(Exception exception)
 		{
-			if(showingException)
+			if (showingException)
 				return;
 
 			try
 			{
 				showingException = true;
-				var dialog = new ErrorDialog(exception)
-				{
-					Owner = Current?.MainWindow
-				};
+				var dialog = new ErrorDialog(exception) { Owner = Current?.MainWindow };
 				dialog.ShowDialog();
 			}
-			catch(Exception dialogException)
+			catch (Exception dialogException)
 			{
 				FlightRecorder.Log("Error dialog failed");
 				FlightRecorder.Log(dialogException);
 				try
 				{
-					MessageBox.Show(exception.ToString(), "DataHunter error", MessageBoxButton.OK, MessageBoxImage.Error);
+					MessageBox.Show(
+						exception.ToString(),
+						"DataHunter error",
+						MessageBoxButton.OK,
+						MessageBoxImage.Error
+					);
 				}
-				catch
-				{
-				}
+				catch { }
 			}
 			finally
 			{

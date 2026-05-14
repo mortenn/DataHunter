@@ -16,7 +16,7 @@ namespace DataHunter.Command
 
 		private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
-			if(args.PropertyName == nameof(AppContext.SelectedFolder))
+			if (args.PropertyName == nameof(AppContext.SelectedFolder))
 			{
 				AttachSelectedFolder();
 				OnCanExecuteChanged();
@@ -25,17 +25,17 @@ namespace DataHunter.Command
 
 		private void AttachSelectedFolder()
 		{
-			if(selectedFolder != null)
+			if (selectedFolder != null)
 				selectedFolder.PropertyChanged -= SelectedFolderOnPropertyChanged;
 
 			selectedFolder = Context.SelectedFolder;
-			if(selectedFolder != null)
+			if (selectedFolder != null)
 				selectedFolder.PropertyChanged += SelectedFolderOnPropertyChanged;
 		}
 
 		private void SelectedFolderOnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
-			if(AffectsCanExecute(args.PropertyName))
+			if (AffectsCanExecute(args.PropertyName))
 				OnCanExecuteChanged();
 		}
 

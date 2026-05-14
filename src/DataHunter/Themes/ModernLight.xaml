@@ -1,5 +1,6 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Color x:Key="WindowBackgroundColor">#F3F3F3</Color>
 	<Color x:Key="SurfaceColor">#FAFAFA</Color>
 	<Color x:Key="SurfaceAltColor">#F7F7F7</Color>

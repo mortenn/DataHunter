@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -41,9 +41,11 @@ namespace DataHunter.ViewModel
 			scanCache.FolderScanStarted += ScanCacheOnFolderScanStarted;
 			scanCache.ScanningChanged += ScanCacheOnScanningChanged;
 
-			Drives = DriveInfo.GetDrives()
+			Drives = DriveInfo
+				.GetDrives()
 				.Where(d => d.DriveType == DriveType.Fixed && d.IsReady)
-				.Select(d => new Drive(d, scanCache)).ToList();
+				.Select(d => new Drive(d, scanCache))
+				.ToList();
 			MyPcRoot = new MyPc(Drives);
 			TreeRoots = new List<MyPc> { MyPcRoot };
 			LandingShortcuts = BuildLandingShortcuts();
@@ -69,7 +71,11 @@ namespace DataHunter.ViewModel
 
 		public bool CanNavigateForward => forwardHistory.Count > 0;
 
-		public string ScanStatusText => selected_folder == null ? "Select a folder to scan" : scanCanceled ? "Scan canceled" : scanInProgress ? "Scanning" : "Scan complete";
+		public string ScanStatusText =>
+			selected_folder == null ? "Select a folder to scan"
+			: scanCanceled ? "Scan canceled"
+			: scanInProgress ? "Scanning"
+			: "Scan complete";
 
 		public bool IsScanInProgress => scanInProgress;
 
@@ -77,21 +83,20 @@ namespace DataHunter.ViewModel
 
 		public string ScanElapsedText => selected_folder == null ? null : FormatElapsed(scanElapsed);
 
-		public string ScannedFolderCountText => selected_folder == null ? null : $"Scanned {completedScanFolders}/{totalScanFolders} folders";
+		public string ScannedFolderCountText =>
+			selected_folder == null ? null : $"Scanned {completedScanFolders}/{totalScanFolders} folders";
 
 		public string SelectedThemeMode
 		{
-			get
-			{
-				return selectedThemeMode;
-			}
+			get { return selectedThemeMode; }
 			set
 			{
-				if(selectedThemeMode == value || string.IsNullOrEmpty(value))
+				if (selectedThemeMode == value || string.IsNullOrEmpty(value))
 					return;
 
 				selectedThemeMode = value;
-				((App)Application.Current).ThemeManager.Mode = (AppThemeMode)Enum.Parse(typeof(AppThemeMode), selectedThemeMode);
+				((App)Application.Current).ThemeManager.Mode = (AppThemeMode)
+					Enum.Parse(typeof(AppThemeMode), selectedThemeMode);
 				OnPropertyChanged(nameof(SelectedThemeMode));
 				OnPropertyChanged(nameof(IsThemeToggleDark));
 			}
@@ -101,7 +106,7 @@ namespace DataHunter.ViewModel
 
 		public void ToggleThemeMode()
 		{
-			if(SelectedThemeMode == "System")
+			if (SelectedThemeMode == "System")
 				SelectedThemeMode = ((App)Application.Current).ThemeManager.IsSystemLightTheme ? "Dark" : "Light";
 			else
 				SelectedThemeMode = "System";
@@ -118,7 +123,7 @@ namespace DataHunter.ViewModel
 		{
 			FlightRecorder.Log($"SelectPath start: {path}");
 			var folder = CreateContainerForPath(path);
-			if(folder == null)
+			if (folder == null)
 			{
 				FlightRecorder.Log($"SelectPath ignored missing path: {path}");
 				return;
@@ -149,45 +154,39 @@ namespace DataHunter.ViewModel
 
 		public string CurrentScanPath
 		{
-			get
-			{
-				return currentScanPath;
-			}
+			get { return currentScanPath; }
 		}
 
 		public DataContainer SelectedFolder
 		{
-			get
-			{
-				return selected_folder;
-			}
+			get { return selected_folder; }
 			set
 			{
-				if(selected_folder != null && selected_folder == value)
+				if (selected_folder != null && selected_folder == value)
 					return;
 
-				if(!navigatingHistory)
+				if (!navigatingHistory)
 				{
-					if(selected_folder != null)
+					if (selected_folder != null)
 						backHistory.Push(selected_folder);
 					forwardHistory.Clear();
 				}
 
-				if(selected_folder != null)
+				if (selected_folder != null)
 				{
 					DetachContentHandlers();
 					selected_folder.AppContext = null;
 					selected_folder.IsSelected = false;
-					if(value != null)
+					if (value != null)
 					{
 						var parent = value;
-						while(parent != null && parent != selected_folder)
+						while (parent != null && parent != selected_folder)
 							parent = parent.Parent;
-						if(parent == null && selected_folder != null)
+						if (parent == null && selected_folder != null)
 							selected_folder.IsExpanded = false;
 					}
 				}
-				if(value != null)
+				if (value != null)
 				{
 					scanCanceled = false;
 					scanCache.ResumeScanning();
@@ -195,13 +194,13 @@ namespace DataHunter.ViewModel
 
 				MyPcRoot.IsSelected = value == null;
 				selected_folder = value;
-				if(selected_folder != null)
+				if (selected_folder != null)
 				{
 					MyPcRoot.IsExpanded = true;
 					selected_folder.AppContext = this;
 					selected_folder.IsExpanded = selected_folder.Parent == null;
 					selected_folder.IsSelected = true;
-					if(expandTreeAncestors)
+					if (expandTreeAncestors)
 						ExpandTreeAncestors(selected_folder);
 				}
 				OnPropertyChanged(nameof(SelectedFolder));
@@ -220,7 +219,7 @@ namespace DataHunter.ViewModel
 
 		public void NavigateBack()
 		{
-			if(!CanNavigateBack)
+			if (!CanNavigateBack)
 				return;
 
 			forwardHistory.Push(selected_folder);
@@ -229,7 +228,7 @@ namespace DataHunter.ViewModel
 
 		public void NavigateForward()
 		{
-			if(!CanNavigateForward)
+			if (!CanNavigateForward)
 				return;
 
 			backHistory.Push(selected_folder);
@@ -238,15 +237,18 @@ namespace DataHunter.ViewModel
 
 		public ICollectionView Content
 		{
-			get
-			{
-				return content;
-			}
+			get { return content; }
 		}
 
-		public bool IsContentLoadDeferred => selected_folder != null && deferredContentChildCount > LargeFolderTableWarningThreshold && !IsContentLoadDismissedForSelectedFolder;
+		public bool IsContentLoadDeferred =>
+			selected_folder != null
+			&& deferredContentChildCount > LargeFolderTableWarningThreshold
+			&& !IsContentLoadDismissedForSelectedFolder;
 
-		public string ContentLoadWarningText => deferredContentChildCount <= 0 ? null : $"This folder contains {deferredContentChildCount:N0} child folders. Loading the table can be slow.";
+		public string ContentLoadWarningText =>
+			deferredContentChildCount <= 0
+				? null
+				: $"This folder contains {deferredContentChildCount:N0} child folders. Loading the table can be slow.";
 
 		public string DetailTitle => PieSource == null ? "Details" : PieSource.Name;
 
@@ -256,13 +258,10 @@ namespace DataHunter.ViewModel
 
 		public bool IsDetailPaneExpanded
 		{
-			get
-			{
-				return isDetailPaneExpanded;
-			}
+			get { return isDetailPaneExpanded; }
 			set
 			{
-				if(isDetailPaneExpanded == value)
+				if (isDetailPaneExpanded == value)
 					return;
 
 				isDetailPaneExpanded = value;
@@ -272,13 +271,10 @@ namespace DataHunter.ViewModel
 
 		public PieSlice HighlightedPieSlice
 		{
-			get
-			{
-				return highlightedPieSlice;
-			}
+			get { return highlightedPieSlice; }
 			set
 			{
-				if(highlightedPieSlice == value)
+				if (highlightedPieSlice == value)
 					return;
 
 				highlightedPieSlice = value;
@@ -288,16 +284,13 @@ namespace DataHunter.ViewModel
 
 		public Folder SelectedContentFolder
 		{
-			get
-			{
-				return selectedContentFolder;
-			}
+			get { return selectedContentFolder; }
 			set
 			{
-				if(suppressContentSelection && value != null)
+				if (suppressContentSelection && value != null)
 					return;
 
-				if(selectedContentFolder == value)
+				if (selectedContentFolder == value)
 					return;
 
 				selectedContentFolder = value;
@@ -313,13 +306,13 @@ namespace DataHunter.ViewModel
 		public void Refresh()
 		{
 			var dispatcher = Application.Current?.Dispatcher;
-			if(dispatcher != null && !dispatcher.CheckAccess())
+			if (dispatcher != null && !dispatcher.CheckAccess())
 			{
 				dispatcher.BeginInvoke(new Action(Refresh));
 				return;
 			}
 
-			if(selected_folder != null && !ReferenceEquals(selected_folder.Folders, contentFolders))
+			if (selected_folder != null && !ReferenceEquals(selected_folder.Folders, contentFolders))
 			{
 				UpdateContent();
 				OnPropertyChanged(nameof(Content));
@@ -332,7 +325,7 @@ namespace DataHunter.ViewModel
 
 		public void LoadLargeFolderTable()
 		{
-			if(selected_folder == null)
+			if (selected_folder == null)
 				return;
 
 			contentLoadDismissedPath = selected_folder.FullName;
@@ -345,12 +338,12 @@ namespace DataHunter.ViewModel
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;
-			if(handler == null)
+			if (handler == null)
 				return;
 
 			var args = new PropertyChangedEventArgs(propertyName);
 			var dispatcher = Application.Current?.Dispatcher;
-			if(dispatcher != null && !dispatcher.CheckAccess())
+			if (dispatcher != null && !dispatcher.CheckAccess())
 				dispatcher.BeginInvoke(new Action(() => handler(this, args)));
 			else
 				handler(this, args);
@@ -373,12 +366,32 @@ namespace DataHunter.ViewModel
 		{
 			var shortcuts = new[]
 			{
-				new LandingShortcut("My profile", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Your user profile and app data"),
+				new LandingShortcut(
+					"My profile",
+					Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+					"Your user profile and app data"
+				),
 				new LandingShortcut("Windows temp folder", Path.GetTempPath(), "Temporary files for the current user"),
-				new LandingShortcut("Program Files", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "64-bit installed applications"),
-				new LandingShortcut("Program Files (x86)", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "32-bit installed applications"),
-				new LandingShortcut("Windows", Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Windows system files"),
-				new LandingShortcut("Downloads", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"), "Downloaded files")
+				new LandingShortcut(
+					"Program Files",
+					Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+					"64-bit installed applications"
+				),
+				new LandingShortcut(
+					"Program Files (x86)",
+					Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+					"32-bit installed applications"
+				),
+				new LandingShortcut(
+					"Windows",
+					Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+					"Windows system files"
+				),
+				new LandingShortcut(
+					"Downloads",
+					Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
+					"Downloaded files"
+				),
 			};
 
 			return shortcuts
@@ -390,29 +403,36 @@ namespace DataHunter.ViewModel
 
 		private DataContainer CreateContainerForPath(string path)
 		{
-			if(string.IsNullOrWhiteSpace(path))
+			if (string.IsNullOrWhiteSpace(path))
 				return null;
 
 			var fullName = Path.GetFullPath(path);
 			FlightRecorder.Log($"CreateContainerForPath fullName: {fullName}");
 			var root = Path.GetPathRoot(fullName);
 			var drive = Drives.FirstOrDefault(d => string.Equals(d.FullName, root, StringComparison.OrdinalIgnoreCase));
-			if(drive == null)
+			if (drive == null)
 				return null;
 
-			if(string.Equals(Path.GetFullPath(drive.FullName), fullName, StringComparison.OrdinalIgnoreCase))
+			if (string.Equals(Path.GetFullPath(drive.FullName), fullName, StringComparison.OrdinalIgnoreCase))
 				return drive;
 
 			var stack = new Stack<string>();
 			var current = new DirectoryInfo(fullName);
-			while(current != null && !string.Equals(Path.GetFullPath(current.FullName), Path.GetFullPath(drive.FullName), StringComparison.OrdinalIgnoreCase))
+			while (
+				current != null
+				&& !string.Equals(
+					Path.GetFullPath(current.FullName),
+					Path.GetFullPath(drive.FullName),
+					StringComparison.OrdinalIgnoreCase
+				)
+			)
 			{
 				stack.Push(current.FullName);
 				current = current.Parent;
 			}
 
 			DataContainer parent = drive;
-			while(stack.Count > 0)
+			while (stack.Count > 0)
 			{
 				var entry = scanCache.GetOrCreate(stack.Pop());
 				parent = parent.GetOrCreateChildFolder(entry);
@@ -424,7 +444,7 @@ namespace DataHunter.ViewModel
 		private static void ExpandTreeAncestors(DataContainer folder)
 		{
 			var current = folder.Parent;
-			while(current != null)
+			while (current != null)
 			{
 				current.IsExpanded = true;
 				current = current.Parent;
@@ -433,37 +453,40 @@ namespace DataHunter.ViewModel
 
 		private void AttachContentHandlers()
 		{
-			if(contentFolders == null)
+			if (contentFolders == null)
 				return;
 
-			if(contentFolders.Count > LargeFolderEventHandlerLimit)
+			if (contentFolders.Count > LargeFolderEventHandlerLimit)
 				return;
 
-			foreach(var folder in contentFolders)
+			foreach (var folder in contentFolders)
 				folder.PropertyChanged += ContentFolderOnPropertyChanged;
 		}
 
 		private void ContentFolderOnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
-			if(args.PropertyName == nameof(DataContainer.Bytes) || args.PropertyName == nameof(DataContainer.SortBytes))
+			if (
+				args.PropertyName == nameof(DataContainer.Bytes)
+				|| args.PropertyName == nameof(DataContainer.SortBytes)
+			)
 			{
 				RefreshContentShares();
 				ScheduleContentRefresh();
 				SchedulePieRefresh();
 			}
-			else if(args.PropertyName == nameof(DataContainer.ShareOfParent))
+			else if (args.PropertyName == nameof(DataContainer.ShareOfParent))
 				ScheduleContentRefresh();
 		}
 
 		private void RefreshContentShares()
 		{
-			if(contentFolders == null)
+			if (contentFolders == null)
 				return;
 
-			if(contentFolders.Count > ShareRefreshLimit)
+			if (contentFolders.Count > ShareRefreshLimit)
 				return;
 
-			foreach(var folder in contentFolders)
+			foreach (var folder in contentFolders)
 				folder.RefreshShareOfParent();
 		}
 
@@ -481,28 +504,28 @@ namespace DataHunter.ViewModel
 
 		private void DetachContentHandlers()
 		{
-			if(contentFolders == null)
+			if (contentFolders == null)
 				return;
 
-			if(contentFolders.Count > LargeFolderEventHandlerLimit)
+			if (contentFolders.Count > LargeFolderEventHandlerLimit)
 				return;
 
-			foreach(var folder in contentFolders)
+			foreach (var folder in contentFolders)
 				folder.PropertyChanged -= ContentFolderOnPropertyChanged;
 		}
 
 		private void ScheduleContentRefresh()
 		{
-			if(content == null)
+			if (content == null)
 				return;
 
-			if(!contentRefreshTimer.IsEnabled)
+			if (!contentRefreshTimer.IsEnabled)
 				contentRefreshTimer.Start();
 		}
 
 		private void SchedulePieRefresh()
 		{
-			if(!pieRefreshTimer.IsEnabled)
+			if (!pieRefreshTimer.IsEnabled)
 				pieRefreshTimer.Start();
 		}
 
@@ -510,12 +533,12 @@ namespace DataHunter.ViewModel
 		{
 			RunOnUiThread(() =>
 			{
-				if(!IsSelectedScanRoot(scan.Root) || !IsInSelectedFolder(scan.FullName))
+				if (!IsSelectedScanRoot(scan.Root) || !IsInSelectedFolder(scan.FullName))
 					return;
 
 				var status = GetScanStatus(scan.Root);
 				status.PendingPath = scan.FullName;
-				if(!scanStatusTimer.IsEnabled)
+				if (!scanStatusTimer.IsEnabled)
 					scanStatusTimer.Start();
 			});
 		}
@@ -529,7 +552,7 @@ namespace DataHunter.ViewModel
 				status.PendingTotal = counts.Total;
 				status.Completed = counts.Completed;
 				status.Total = counts.Total;
-				if(IsSelectedScanRoot(counts.Root) && !scanStatusTimer.IsEnabled)
+				if (IsSelectedScanRoot(counts.Root) && !scanStatusTimer.IsEnabled)
 					scanStatusTimer.Start();
 			});
 		}
@@ -545,11 +568,11 @@ namespace DataHunter.ViewModel
 
 		private void ScanCacheOnEntryChanged(object sender, FolderScanEntryChanged change)
 		{
-			if(Interlocked.Exchange(ref entryChangeRefreshScheduled, 1) == 1)
+			if (Interlocked.Exchange(ref entryChangeRefreshScheduled, 1) == 1)
 				return;
 
 			var dispatcher = Application.Current?.Dispatcher;
-			if(dispatcher != null)
+			if (dispatcher != null)
 				dispatcher.BeginInvoke(new Action(ProcessPendingEntryChanges));
 			else
 				ProcessPendingEntryChanges();
@@ -558,7 +581,7 @@ namespace DataHunter.ViewModel
 		private void ProcessPendingEntryChanges()
 		{
 			Interlocked.Exchange(ref entryChangeRefreshScheduled, 0);
-			if(selected_folder == null)
+			if (selected_folder == null)
 				return;
 
 			ScheduleContentRefresh();
@@ -572,7 +595,7 @@ namespace DataHunter.ViewModel
 				var status = GetScanStatus(scan.Root);
 				status.InProgress = scan.Scanning;
 				UpdateRootScanActivity(scan.Root, scan.Scanning);
-				if(status.InProgress)
+				if (status.InProgress)
 				{
 					status.Stopwatch.Restart();
 					status.Elapsed = TimeSpan.Zero;
@@ -585,16 +608,16 @@ namespace DataHunter.ViewModel
 					status.PendingPath = null;
 				}
 
-				if(!IsSelectedScanRoot(scan.Root))
+				if (!IsSelectedScanRoot(scan.Root))
 					return;
 
 				ApplySelectedScanStatus();
-				if(status.InProgress)
+				if (status.InProgress)
 					scanElapsedTimer.Start();
 				else
 					scanElapsedTimer.Stop();
 
-				if(!status.InProgress)
+				if (!status.InProgress)
 				{
 					currentScanPath = status.CurrentPath;
 					OnPropertyChanged(nameof(CurrentScanPath));
@@ -609,7 +632,7 @@ namespace DataHunter.ViewModel
 			var status = GetScanStatus(selectedScanRoot);
 			status.Completed = status.PendingCompleted;
 			status.Total = status.PendingTotal;
-			if(status.PendingPath != null)
+			if (status.PendingPath != null)
 				status.CurrentPath = status.PendingPath;
 			status.PendingPath = null;
 			completedScanFolders = status.Completed;
@@ -618,14 +641,14 @@ namespace DataHunter.ViewModel
 			OnPropertyChanged(nameof(ScannedFolderCountText));
 			OnPropertyChanged(nameof(CurrentScanPath));
 
-			if(!scanInProgress)
+			if (!scanInProgress)
 				OnPropertyChanged(nameof(ScanStatusText));
 		}
 
 		private void ScanElapsedTimerOnTick(object sender, EventArgs e)
 		{
 			var status = GetScanStatus(selectedScanRoot);
-			if(status.InProgress)
+			if (status.InProgress)
 				status.Elapsed = status.Stopwatch.Elapsed;
 			scanElapsed = status.Elapsed;
 			OnPropertyChanged(nameof(ScanElapsedText));
@@ -639,7 +662,7 @@ namespace DataHunter.ViewModel
 			highlightedPieSlice = null;
 			OnPropertyChanged(nameof(SelectedContentFolder));
 			OnPropertyChanged(nameof(HighlightedPieSlice));
-			if(selected_folder == null)
+			if (selected_folder == null)
 			{
 				content = null;
 				contentFolders = null;
@@ -655,7 +678,7 @@ namespace DataHunter.ViewModel
 			}
 
 			var childEntries = selected_folder.LoadChildEntries();
-			if(childEntries.Count > LargeFolderTableWarningThreshold && !IsContentLoadDismissedForSelectedFolder)
+			if (childEntries.Count > LargeFolderTableWarningThreshold && !IsContentLoadDismissedForSelectedFolder)
 			{
 				content = null;
 				contentFolders = null;
@@ -667,7 +690,10 @@ namespace DataHunter.ViewModel
 			{
 				deferredContentChildCount = 0;
 				contentFolders = selected_folder.Folders;
-				contentRefreshTimer.Interval = contentFolders.Count > LargeFolderRefreshThreshold ? LargeFolderRefreshInterval : NormalRefreshInterval;
+				contentRefreshTimer.Interval =
+					contentFolders.Count > LargeFolderRefreshThreshold
+						? LargeFolderRefreshInterval
+						: NormalRefreshInterval;
 				AttachContentHandlers();
 				RebuildContentView();
 			}
@@ -681,7 +707,7 @@ namespace DataHunter.ViewModel
 
 		private void RebuildContentView()
 		{
-			if(contentFolders == null)
+			if (contentFolders == null)
 			{
 				content = null;
 				OnPropertyChanged(nameof(Content));
@@ -697,14 +723,19 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				return selected_folder != null && string.Equals(contentLoadDismissedPath, selected_folder.FullName, StringComparison.OrdinalIgnoreCase);
+				return selected_folder != null
+					&& string.Equals(
+						contentLoadDismissedPath,
+						selected_folder.FullName,
+						StringComparison.OrdinalIgnoreCase
+					);
 			}
 		}
 
 		private static void RunOnUiThread(Action action)
 		{
 			var dispatcher = Application.Current?.Dispatcher;
-			if(dispatcher != null && !dispatcher.CheckAccess())
+			if (dispatcher != null && !dispatcher.CheckAccess())
 				dispatcher.BeginInvoke(action);
 			else
 				action();
@@ -714,14 +745,14 @@ namespace DataHunter.ViewModel
 		{
 			var status = GetScanStatus(selectedScanRoot);
 			scanInProgress = status.InProgress;
-			if(status.InProgress)
+			if (status.InProgress)
 				scanCanceled = false;
 			scanElapsed = status.InProgress ? status.Stopwatch.Elapsed : status.Elapsed;
 			completedScanFolders = status.Completed;
 			totalScanFolders = status.Total;
 			currentScanPath = status.PendingPath ?? status.CurrentPath;
 
-			if(scanInProgress)
+			if (scanInProgress)
 				scanElapsedTimer.Start();
 			else
 				scanElapsedTimer.Stop();
@@ -737,7 +768,7 @@ namespace DataHunter.ViewModel
 		{
 			root = root ?? string.Empty;
 			DriveScanStatus status;
-			if(!scanStatuses.TryGetValue(root, out status))
+			if (!scanStatuses.TryGetValue(root, out status))
 			{
 				status = new DriveScanStatus();
 				scanStatuses[root] = status;
@@ -753,40 +784,48 @@ namespace DataHunter.ViewModel
 
 		private bool IsSelectedScanRoot(string root)
 		{
-			return string.Equals(root ?? string.Empty, selectedScanRoot ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+			return string.Equals(
+				root ?? string.Empty,
+				selectedScanRoot ?? string.Empty,
+				StringComparison.OrdinalIgnoreCase
+			);
 		}
 
 		private void UpdateRootScanActivity(string root, bool active)
 		{
 			var drive = Drives.FirstOrDefault(d => string.Equals(d.FullName, root, StringComparison.OrdinalIgnoreCase));
-			if(drive != null)
+			if (drive != null)
 				drive.HasActiveScan = active;
 		}
 
 		private bool IsInSelectedFolder(string fullName)
 		{
 			var selectedFullName = selected_folder?.FullName;
-			if(string.IsNullOrEmpty(selectedFullName) || string.IsNullOrEmpty(fullName))
+			if (string.IsNullOrEmpty(selectedFullName) || string.IsNullOrEmpty(fullName))
 				return false;
 
-			selectedFullName = Path.GetFullPath(selectedFullName).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
-			fullName = Path.GetFullPath(fullName).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+			selectedFullName =
+				Path.GetFullPath(selectedFullName).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+				+ Path.DirectorySeparatorChar;
+			fullName =
+				Path.GetFullPath(fullName).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+				+ Path.DirectorySeparatorChar;
 			return fullName.StartsWith(selectedFullName, StringComparison.OrdinalIgnoreCase);
 		}
 
 		private List<PieSlice> BuildPieSlices(DataContainer source)
 		{
-			if(source == null)
+			if (source == null)
 				return new List<PieSlice>();
 
 			source.EnsureScanning();
 			var candidates = new List<PieSliceCandidate>();
-			if(source.OwnFileBytes > 0)
+			if (source.OwnFileBytes > 0)
 				candidates.Add(new PieSliceCandidate("Files", source.OwnFileBytes, null));
 
-			foreach(var entry in source.LoadedChildEntries.Where(f => !f.IsVirtual))
+			foreach (var entry in source.LoadedChildEntries.Where(f => !f.IsVirtual))
 			{
-				if(entry.TotalBytes <= 0)
+				if (entry.TotalBytes <= 0)
 					continue;
 
 				candidates.Add(new PieSliceCandidate(entry.Name, entry.TotalBytes, entry));
@@ -796,13 +835,20 @@ namespace DataHunter.ViewModel
 			var visible = ordered.Take(MaxPieSlices).ToList();
 			var otherBytes = ordered.Skip(MaxPieSlices).Sum(slice => slice.Bytes);
 			var slices = new List<PieSlice>();
-			for(var i = 0; i < visible.Count; i++)
+			for (var i = 0; i < visible.Count; i++)
 			{
 				var slice = visible[i];
-				slices.Add(new PieSlice(slice.Name, slice.Bytes, GetPieBrush(i, Math.Max(visible.Count, 1)), slice.Source == null ? null : source.GetOrCreateChildFolder(slice.Source)));
+				slices.Add(
+					new PieSlice(
+						slice.Name,
+						slice.Bytes,
+						GetPieBrush(i, Math.Max(visible.Count, 1)),
+						slice.Source == null ? null : source.GetOrCreateChildFolder(slice.Source)
+					)
+				);
 			}
 
-			if(otherBytes > 0)
+			if (otherBytes > 0)
 				slices.Add(new PieSlice("Other", otherBytes, otherPieBrush));
 
 			return slices;
@@ -814,17 +860,17 @@ namespace DataHunter.ViewModel
 			pieSlices = BuildPieSlices(PieSource);
 			var nextHighlight = FindMatchingSlice(pieSlices, previousHighlight);
 			var highlightChanged = !ReferenceEquals(highlightedPieSlice, nextHighlight);
-			if(!ReferenceEquals(highlightedPieSlice, nextHighlight))
+			if (!ReferenceEquals(highlightedPieSlice, nextHighlight))
 				highlightedPieSlice = nextHighlight;
 
-			if(highlightChanged)
+			if (highlightChanged)
 				OnPropertyChanged(nameof(HighlightedPieSlice));
 			OnPropertyChanged(nameof(PieSlices));
 		}
 
 		private static PieSlice FindMatchingSlice(IEnumerable<PieSlice> slices, PieSlice previousHighlight)
 		{
-			if(previousHighlight == null)
+			if (previousHighlight == null)
 				return null;
 
 			return slices.FirstOrDefault(slice => IsSameSlice(slice, previousHighlight));
@@ -832,10 +878,10 @@ namespace DataHunter.ViewModel
 
 		private static bool IsSameSlice(PieSlice left, PieSlice right)
 		{
-			if(left == null || right == null)
+			if (left == null || right == null)
 				return false;
 
-			if(left.Source != null || right.Source != null)
+			if (left.Source != null || right.Source != null)
 				return ReferenceEquals(left.Source, right.Source);
 
 			return string.Equals(left.Name, right.Name, StringComparison.Ordinal);
@@ -843,28 +889,29 @@ namespace DataHunter.ViewModel
 
 		private static Brush GetPieBrush(int index, int count)
 		{
-			if(count <= 1)
+			if (count <= 1)
 				return CreatePieBrush(pieStartColor);
 
 			var amount = (double)index / (count - 1);
 			var color = Color.FromRgb(
 				(byte)(pieStartColor.R + (pieEndColor.R - pieStartColor.R) * amount),
 				(byte)(pieStartColor.G + (pieEndColor.G - pieStartColor.G) * amount),
-				(byte)(pieStartColor.B + (pieEndColor.B - pieStartColor.B) * amount));
+				(byte)(pieStartColor.B + (pieEndColor.B - pieStartColor.B) * amount)
+			);
 			return CreatePieBrush(color);
 		}
 
 		private static Brush CreatePieBrush(Color color)
 		{
 			var brush = new SolidColorBrush(color);
-			if(brush.CanFreeze)
+			if (brush.CanFreeze)
 				brush.Freeze();
 			return brush;
 		}
 
 		private static string FormatElapsed(TimeSpan elapsed)
 		{
-			if(elapsed.TotalHours >= 1)
+			if (elapsed.TotalHours >= 1)
 				return elapsed.ToString(@"h\:mm\:ss");
 
 			return elapsed.ToString(@"m\:ss");
@@ -881,15 +928,15 @@ namespace DataHunter.ViewModel
 
 			public int Compare(Folder left, Folder right)
 			{
-				if(left == null || right == null)
+				if (left == null || right == null)
 					return 0;
-				
+
 				var knownComparison = right.HasKnownSize.CompareTo(left.HasKnownSize);
-				if(knownComparison != 0)
+				if (knownComparison != 0)
 					return knownComparison;
 
 				var sizeComparison = right.SortBytes.CompareTo(left.SortBytes);
-				if(sizeComparison != 0)
+				if (sizeComparison != 0)
 					return sizeComparison;
 
 				return StringComparer.CurrentCultureIgnoreCase.Compare(left.Info.Name, right.Info.Name);
@@ -966,7 +1013,9 @@ namespace DataHunter.ViewModel
 		private readonly FolderScanCache scanCache = new FolderScanCache();
 		private readonly Stack<DataContainer> backHistory = new Stack<DataContainer>();
 		private readonly Stack<DataContainer> forwardHistory = new Stack<DataContainer>();
-		private readonly Dictionary<string, DriveScanStatus> scanStatuses = new Dictionary<string, DriveScanStatus>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, DriveScanStatus> scanStatuses = new Dictionary<string, DriveScanStatus>(
+			StringComparer.OrdinalIgnoreCase
+		);
 		private readonly DispatcherTimer contentRefreshTimer;
 		private readonly DispatcherTimer pieRefreshTimer;
 		private readonly DispatcherTimer scanElapsedTimer;

@@ -5,9 +5,8 @@ namespace DataHunter.Command
 {
 	public class OpenCommand : AppCommand
 	{
-		public OpenCommand(AppContext context) : base(context)
-		{
-		}
+		public OpenCommand(AppContext context)
+			: base(context) { }
 
 		public override bool CanExecute(object parameter)
 		{

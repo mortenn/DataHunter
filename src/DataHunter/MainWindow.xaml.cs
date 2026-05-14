@@ -31,13 +31,13 @@ namespace DataHunter
 			try
 			{
 				var shortcut = ((FrameworkElement)sender).DataContext as AppContext.LandingShortcut;
-				if(shortcut == null)
+				if (shortcut == null)
 					return;
 
 				FlightRecorder.Log($"Shortcut click: {shortcut.Title} -> {shortcut.FullName}");
 				((AppContext)DataContext).SelectPath(shortcut.FullName);
 			}
-			catch(Exception exception)
+			catch (Exception exception)
 			{
 				FlightRecorder.Log("Shortcut click exception");
 				FlightRecorder.Log(exception);
@@ -71,7 +71,7 @@ namespace DataHunter
 		private void Window_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			var context = (AppContext)DataContext;
-			switch(e.ChangedButton)
+			switch (e.ChangedButton)
 			{
 				case MouseButton.XButton1:
 					context.NavigateBack();
@@ -86,9 +86,9 @@ namespace DataHunter
 
 		private void Select(object sender)
 		{
-			if(sender is DataContainer folder)
+			if (sender is DataContainer folder)
 				((AppContext)DataContext).SelectedFolder = folder;
-			else if(sender is MyPc)
+			else if (sender is MyPc)
 				((AppContext)DataContext).ShowStartPage();
 		}
 	}

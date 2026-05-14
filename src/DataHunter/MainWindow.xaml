@@ -1,16 +1,21 @@
-﻿<Window x:Class="DataHunter.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-				xmlns:v="clr-namespace:DataHunter.View"
-				xmlns:vm="clr-namespace:DataHunter.ViewModel"
-				Title="DataHunter" Height="760" Width="1200" MinHeight="560" MinWidth="900"
-				Icon="app.ico"
-				Background="{DynamicResource WindowBackgroundBrush}"
-				Foreground="{DynamicResource ForegroundBrush}"
-				PreviewMouseDown="Window_OnPreviewMouseDown">
+﻿<Window
+	x:Class="DataHunter.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:v="clr-namespace:DataHunter.View"
+	xmlns:vm="clr-namespace:DataHunter.ViewModel"
+	Title="DataHunter"
+	Width="1200"
+	Height="760"
+	MinWidth="900"
+	MinHeight="560"
+	Background="{DynamicResource WindowBackgroundBrush}"
+	Foreground="{DynamicResource ForegroundBrush}"
+	Icon="app.ico"
+	PreviewMouseDown="Window_OnPreviewMouseDown"
+	mc:Ignorable="d">
 
 	<Window.DataContext>
 		<vm:AppContext />
@@ -25,7 +30,7 @@
 			<Setter Property="FontFamily" Value="Cascadia Mono, Consolas" />
 		</Style>
 
-		<Style x:Key="RightAlignedMonospaceCellTextStyle" TargetType="TextBlock" BasedOn="{StaticResource MonospaceCellTextStyle}">
+		<Style x:Key="RightAlignedMonospaceCellTextStyle" BasedOn="{StaticResource MonospaceCellTextStyle}" TargetType="TextBlock">
 			<Setter Property="HorizontalAlignment" Value="Stretch" />
 			<Setter Property="TextAlignment" Value="Right" />
 		</Style>
@@ -54,15 +59,14 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="Button">
-						<Border x:Name="Root"
-						        Background="{TemplateBinding Background}"
-						        BorderBrush="{TemplateBinding BorderBrush}"
-						        BorderThickness="{TemplateBinding BorderThickness}"
-						        CornerRadius="6"
-						        SnapsToDevicePixels="True">
-							<ContentPresenter HorizontalAlignment="Stretch"
-							                  VerticalAlignment="Stretch"
-							                  Margin="{TemplateBinding Padding}" />
+						<Border
+							x:Name="Root"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="6"
+							SnapsToDevicePixels="True">
+							<ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 						</Border>
 						<ControlTemplate.Triggers>
 							<Trigger Property="IsMouseOver" Value="True">
@@ -88,9 +92,9 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="ProgressBar">
-						<Grid ClipToBounds="True" Background="{TemplateBinding Background}">
+						<Grid Background="{TemplateBinding Background}" ClipToBounds="True">
 							<Border x:Name="PART_Track" Background="{TemplateBinding Background}" />
-							<Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" />
+							<Border x:Name="PART_Indicator" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}" />
 						</Grid>
 					</ControlTemplate>
 				</Setter.Value>
@@ -103,7 +107,7 @@
 
 		<HierarchicalDataTemplate DataType="{x:Type vm:Drive}" ItemsSource="{Binding Folders}">
 			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="⊘ " Foreground="Red">
+				<TextBlock Foreground="Red" Text="⊘ ">
 					<TextBlock.Style>
 						<Style TargetType="TextBlock">
 							<Style.Triggers>
@@ -125,14 +129,15 @@
 							</Style.Triggers>
 						</Style>
 					</Grid.Style>
-					<Path Data="M 8,2 A 6,6 0 1 1 2,8"
-					      Stroke="{DynamicResource AccentBrush}"
-					      StrokeThickness="2"
-					      StrokeStartLineCap="Round"
-					      StrokeEndLineCap="Round"
-					      Width="16"
-					      Height="16"
-					      Stretch="None">
+					<Path
+						Width="16"
+						Height="16"
+						Data="M 8,2 A 6,6 0 1 1 2,8"
+						Stretch="None"
+						Stroke="{DynamicResource AccentBrush}"
+						StrokeEndLineCap="Round"
+						StrokeStartLineCap="Round"
+						StrokeThickness="2">
 						<Path.RenderTransform>
 							<RotateTransform CenterX="8" CenterY="8" />
 						</Path.RenderTransform>
@@ -153,7 +158,7 @@
 
 		<HierarchicalDataTemplate DataType="{x:Type vm:Folder}" ItemsSource="{Binding Folders}">
 			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="⊘ " Foreground="Red">
+				<TextBlock Foreground="Red" Text="⊘ ">
 					<TextBlock.Style>
 						<Style TargetType="TextBlock">
 							<Style.Triggers>
@@ -175,14 +180,15 @@
 							</Style.Triggers>
 						</Style>
 					</Grid.Style>
-					<Path Data="M 7,1 A 6,6 0 1 1 1,7"
-					      Stroke="{DynamicResource AccentBrush}"
-					      StrokeThickness="2"
-					      StrokeStartLineCap="Round"
-					      StrokeEndLineCap="Round"
-					      Width="14"
-					      Height="14"
-					      Stretch="None">
+					<Path
+						Width="14"
+						Height="14"
+						Data="M 7,1 A 6,6 0 1 1 1,7"
+						Stretch="None"
+						Stroke="{DynamicResource AccentBrush}"
+						StrokeEndLineCap="Round"
+						StrokeStartLineCap="Round"
+						StrokeThickness="2">
 						<Path.RenderTransform>
 							<RotateTransform CenterX="7" CenterY="7" />
 						</Path.RenderTransform>
@@ -198,11 +204,12 @@
 					</Path>
 				</Grid>
 				<Grid Width="16" Height="16" Margin="0,0,5,0">
-					<Path Data="M 2,5 L 7,5 L 8,6 L 14,6 L 14,13 L 2,13 Z"
-					      Stroke="{DynamicResource SecondaryForegroundBrush}"
-					      Fill="Transparent"
-					      StrokeThickness="1.2"
-					      StrokeLineJoin="Round" />
+					<Path
+						Data="M 2,5 L 7,5 L 8,6 L 14,6 L 14,13 L 2,13 Z"
+						Fill="Transparent"
+						Stroke="{DynamicResource SecondaryForegroundBrush}"
+						StrokeLineJoin="Round"
+						StrokeThickness="1.2" />
 					<Grid.Style>
 						<Style TargetType="Grid">
 							<Setter Property="Visibility" Value="Visible" />
@@ -240,7 +247,7 @@
 			</StackPanel>
 		</HierarchicalDataTemplate>
 
-		<Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+		<Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
 			<Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
 			<Setter Property="IsSelected" Value="{Binding IsSelected}" />
 		</Style>
@@ -257,11 +264,17 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<TreeView Grid.Column="0" ItemsSource="{Binding TreeRoots}" Name="TreeView" SelectedItemChanged="TreeView_OnSelectedItemChanged" />
+		<TreeView Name="TreeView" Grid.Column="0" ItemsSource="{Binding TreeRoots}" SelectedItemChanged="TreeView_OnSelectedItemChanged" />
 
-		<GridSplitter Width="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" ShowsPreview="True" Background="{DynamicResource BorderBrush}" />
+		<GridSplitter
+			Grid.Column="1"
+			Width="4"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Stretch"
+			Background="{DynamicResource BorderBrush}"
+			ShowsPreview="True" />
 
-		<Grid Column="2" Background="{DynamicResource WindowBackgroundBrush}">
+		<Grid Background="{DynamicResource WindowBackgroundBrush}" Column="2">
 			<Grid.Style>
 				<Style>
 					<Setter Property="UIElement.Visibility" Value="Collapsed" />
@@ -273,9 +286,14 @@
 				</Style>
 			</Grid.Style>
 
-			<StackPanel Width="520" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<TextBlock Text="Where should DataHunter look first?" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundBrush}" Margin="0,0,0,8" />
-				<TextBlock Text="Pick a common hot spot, or choose a drive from the tree." Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="14" Margin="0,0,0,24" />
+			<StackPanel Width="520" HorizontalAlignment="Center" VerticalAlignment="Center">
+				<TextBlock
+					Margin="0,0,0,8"
+					FontSize="24"
+					FontWeight="SemiBold"
+					Foreground="{DynamicResource ForegroundBrush}"
+					Text="Where should DataHunter look first?" />
+				<TextBlock Margin="0,0,0,24" FontSize="14" Foreground="{DynamicResource SecondaryForegroundBrush}" Text="Pick a common hot spot, or choose a drive from the tree." />
 				<ItemsControl ItemsSource="{Binding LandingShortcuts}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -284,16 +302,30 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Button Click="LandingShortcut_OnClick" Style="{StaticResource LandingShortcutButtonStyle}" Margin="4" AutomationProperties.Name="{Binding Title}">
+							<Button Margin="4" AutomationProperties.Name="{Binding Title}" Click="LandingShortcut_OnClick" Style="{StaticResource LandingShortcutButtonStyle}">
 								<Grid HorizontalAlignment="Stretch">
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
 									</Grid.RowDefinitions>
-									<TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Left" />
-									<TextBlock Grid.Row="1" Text="{Binding Description}" Foreground="{DynamicResource SecondaryForegroundBrush}" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="0,4,0,0" />
-									<TextBlock Grid.Row="2" Text="{Binding FullName}" Foreground="{DynamicResource SecondaryForegroundBrush}" HorizontalAlignment="Left" FontFamily="Cascadia Mono, Consolas" FontSize="11" TextTrimming="CharacterEllipsis" Margin="0,8,0,0" />
+									<TextBlock HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" Text="{Binding Title}" />
+									<TextBlock
+										Grid.Row="1"
+										Margin="0,4,0,0"
+										HorizontalAlignment="Left"
+										Foreground="{DynamicResource SecondaryForegroundBrush}"
+										Text="{Binding Description}"
+										TextWrapping="Wrap" />
+									<TextBlock
+										Grid.Row="2"
+										Margin="0,8,0,0"
+										HorizontalAlignment="Left"
+										FontFamily="Cascadia Mono, Consolas"
+										FontSize="11"
+										Foreground="{DynamicResource SecondaryForegroundBrush}"
+										Text="{Binding FullName}"
+										TextTrimming="CharacterEllipsis" />
 								</Grid>
 							</Button>
 						</DataTemplate>
@@ -314,7 +346,12 @@
 					</Style.Triggers>
 				</Style>
 			</Grid.Style>
-			<TextBlock Text="⊘ Access Denied" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" />
+			<TextBlock
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				FontSize="14"
+				Foreground="Red"
+				Text="⊘ Access Denied" />
 		</Grid>
 
 		<Grid Grid.Column="2">
@@ -337,15 +374,23 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 
-			<StackPanel Grid.Row="0" Background="Transparent" Orientation="Horizontal" Margin="8,8,8,4">
-				<Button Content="⬑" Command="{Binding NavigateCommand}" FontSize="16" Margin="2" AutomationProperties.Name="Navigate back" />
-				<Button Content="↻" Command="{Binding RefreshCommand}" FontSize="16" Margin="0,2" AutomationProperties.Name="Refresh selected folder" />
-				<Button Content="Open in explorer" Command="{Binding OpenCommand}" FontSize="16" Margin="0,2" />
+			<StackPanel Grid.Row="0" Margin="8,8,8,4" Background="Transparent" Orientation="Horizontal">
+				<Button
+					Margin="2"
+					AutomationProperties.Name="Navigate back"
+					Command="{Binding NavigateCommand}"
+					Content="⬑"
+					FontSize="16" />
+				<Button
+					Margin="0,2"
+					AutomationProperties.Name="Refresh selected folder"
+					Command="{Binding RefreshCommand}"
+					Content="↻"
+					FontSize="16" />
+				<Button Margin="0,2" Command="{Binding OpenCommand}" Content="Open in explorer" FontSize="16" />
 			</StackPanel>
 
-			<ListBox Grid.Row="1" ItemsSource="{Binding SelectedFolder.Path}"
-				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-				ScrollViewer.VerticalScrollBarVisibility="Disabled">
+			<ListBox Grid.Row="1" ItemsSource="{Binding SelectedFolder.Path}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Horizontal" />
@@ -353,16 +398,28 @@
 				</ListBox.ItemsPanel>
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<Button Content="{Binding Info.Name}" Click="NavigateAction" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="0" />
+						<Button
+							Margin="0"
+							Background="Transparent"
+							BorderBrush="Transparent"
+							Click="NavigateAction"
+							Content="{Binding Info.Name}"
+							FontSize="16" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
 
-			<StackPanel Grid.Row="2" Orientation="Horizontal" Background="Transparent" TextBlock.Foreground="{DynamicResource ForegroundBrush}" TextBlock.FontSize="14" Margin="8,4">
-				<TextBlock Text="Files in this folder: " Margin="0,2" FontSize="14" />
-				<TextBlock Text="{Binding SelectedFolder.Files,Converter={StaticResource FormatKbSizeConverter}}" FontSize="14" Margin="0,2" />
-				<TextBlock Text=" Including subfolders: " Margin="0,2" FontSize="14" />
-				<TextBlock Text="{Binding SelectedFolder.Bytes,Converter={StaticResource FormatKbSizeConverter}}" FontSize="14" Margin="0,2" />
+			<StackPanel
+				Grid.Row="2"
+				Margin="8,4"
+				Background="Transparent"
+				Orientation="Horizontal"
+				TextBlock.FontSize="14"
+				TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+				<TextBlock Margin="0,2" FontSize="14" Text="Files in this folder: " />
+				<TextBlock Margin="0,2" FontSize="14" Text="{Binding SelectedFolder.Files, Converter={StaticResource FormatKbSizeConverter}}" />
+				<TextBlock Margin="0,2" FontSize="14" Text=" Including subfolders: " />
+				<TextBlock Margin="0,2" FontSize="14" Text="{Binding SelectedFolder.Bytes, Converter={StaticResource FormatKbSizeConverter}}" />
 			</StackPanel>
 
 			<Grid Grid.Row="3">
@@ -373,99 +430,115 @@
 				</Grid.ColumnDefinitions>
 
 				<Grid Grid.Column="0">
-				<DataGrid ItemsSource="{Binding Content}" SelectedItem="{Binding SelectedContentFolder,Mode=TwoWay}" AutoGenerateColumns="False"
-				          EnableRowVirtualization="True" EnableColumnVirtualization="True"
-				          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-				          ScrollViewer.CanContentScroll="True">
-					<DataGrid.Style>
-						<Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding IsContentLoadDeferred}" Value="True">
-									<Setter Property="Visibility" Value="Collapsed" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</DataGrid.Style>
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="Folder" Binding="{Binding Info.Name}" ElementStyle="{StaticResource MonospaceCellTextStyle}" IsReadOnly="True" />
-						<DataGridTextColumn Header="Size" Binding="{Binding Bytes,Converter={StaticResource FormatKbSizeConverter}}" ElementStyle="{StaticResource RightAlignedMonospaceCellTextStyle}" IsReadOnly="True" SortDirection="Descending" />
-						<DataGridTextColumn Header="% of disk" Binding="{Binding DiskSharePercent,StringFormat={}{0:0.00}%}" ElementStyle="{StaticResource RightAlignedMonospaceCellTextStyle}" IsReadOnly="True" />
-					</DataGrid.Columns>
-					<DataGrid.RowStyle>
-						<Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-							<EventSetter Event="MouseDoubleClick" Handler="NavigateAction" />
-							<Setter Property="Template">
-								<Setter.Value>
-									<ControlTemplate TargetType="DataGridRow">
-										<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-											<Grid>
-												<ProgressBar Value="{Binding ShareOfParent,Mode=OneWay}">
-													<ProgressBar.Style>
-														<Style TargetType="ProgressBar" BasedOn="{StaticResource ShareProgressBarStyle}">
-															<Style.Triggers>
-																<DataTrigger Binding="{Binding HasReliableShareOfParent}" Value="False">
-																	<Setter Property="Visibility" Value="Collapsed" />
-																</DataTrigger>
-															</Style.Triggers>
-														</Style>
-													</ProgressBar.Style>
-												</ProgressBar>
-												<SelectiveScrollingGrid>
-													<SelectiveScrollingGrid.ColumnDefinitions>
-														<ColumnDefinition Width="Auto" />
-														<ColumnDefinition Width="*" />
-													</SelectiveScrollingGrid.ColumnDefinitions>
-													<SelectiveScrollingGrid.RowDefinitions>
-														<RowDefinition Height="*" />
-														<RowDefinition Height="Auto" />
-													</SelectiveScrollingGrid.RowDefinitions>
-													<DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-													<DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen,ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical},Converter={x:Static DataGrid.RowDetailsScrollingConverter},RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}" />
-													<DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility,ConverterParameter={x:Static DataGridHeadersVisibility.Row},Converter={x:Static DataGrid.HeadersVisibilityConverter},RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-												</SelectiveScrollingGrid>
-											</Grid>
-										</Border>
-									</ControlTemplate>
-								</Setter.Value>
-							</Setter>
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding Scanning}" Value="True">
-									<Setter Property="TextBlock.FontStyle" Value="Italic" />
-									<Setter Property="TextBlock.Opacity" Value="0.5"/>
-								</DataTrigger>
-								<DataTrigger Binding="{Binding Canceled}" Value="True">
-									<Setter Property="TextBlock.FontStyle" Value="Italic" />
-									<Setter Property="TextBlock.Opacity" Value="0.55"/>
-								</DataTrigger>
-								<DataTrigger Binding="{Binding AccessDenied}" Value="True">
-									<Setter Property="TextBlock.Opacity" Value="0.5"/>
-								</DataTrigger>
-								<DataTrigger Binding="{Binding IsVirtual}" Value="True">
-									<Setter Property="TextBlock.Opacity" Value="0.5" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</DataGrid.RowStyle>
-				</DataGrid>
-				<Grid Visibility="{Binding IsContentLoadDeferred,Converter={StaticResource BooleanToVisibilityConverter}}">
-					<StackPanel Width="420" HorizontalAlignment="Center" VerticalAlignment="Center">
-						<TextBlock Text="Large folder" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundBrush}" Margin="0,0,0,8" />
-						<TextBlock Text="{Binding ContentLoadWarningText}" Foreground="{DynamicResource SecondaryForegroundBrush}" TextWrapping="Wrap" Margin="0,0,0,18" />
-						<Button Content="Load table anyway" Click="LoadLargeFolderTable_OnClick" HorizontalAlignment="Left" Padding="14,6" />
-					</StackPanel>
-				</Grid>
+					<DataGrid
+						AutoGenerateColumns="False"
+						EnableColumnVirtualization="True"
+						EnableRowVirtualization="True"
+						ItemsSource="{Binding Content}"
+						ScrollViewer.CanContentScroll="True"
+						SelectedItem="{Binding SelectedContentFolder, Mode=TwoWay}"
+						VirtualizingPanel.IsVirtualizing="True"
+						VirtualizingPanel.VirtualizationMode="Recycling">
+						<DataGrid.Style>
+							<Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="DataGrid">
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding IsContentLoadDeferred}" Value="True">
+										<Setter Property="Visibility" Value="Collapsed" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</DataGrid.Style>
+						<DataGrid.Columns>
+							<DataGridTextColumn Binding="{Binding Info.Name}" ElementStyle="{StaticResource MonospaceCellTextStyle}" Header="Folder" IsReadOnly="True" />
+							<DataGridTextColumn
+								Binding="{Binding Bytes, Converter={StaticResource FormatKbSizeConverter}}"
+								ElementStyle="{StaticResource RightAlignedMonospaceCellTextStyle}"
+								Header="Size"
+								IsReadOnly="True"
+								SortDirection="Descending" />
+							<DataGridTextColumn Binding="{Binding DiskSharePercent, StringFormat={}{0:0.00}%}" ElementStyle="{StaticResource RightAlignedMonospaceCellTextStyle}" Header="% of disk" IsReadOnly="True" />
+						</DataGrid.Columns>
+						<DataGrid.RowStyle>
+							<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+								<EventSetter Event="MouseDoubleClick" Handler="NavigateAction" />
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="DataGridRow">
+											<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+												<Grid>
+													<ProgressBar Value="{Binding ShareOfParent, Mode=OneWay}">
+														<ProgressBar.Style>
+															<Style BasedOn="{StaticResource ShareProgressBarStyle}" TargetType="ProgressBar">
+																<Style.Triggers>
+																	<DataTrigger Binding="{Binding HasReliableShareOfParent}" Value="False">
+																		<Setter Property="Visibility" Value="Collapsed" />
+																	</DataTrigger>
+																</Style.Triggers>
+															</Style>
+														</ProgressBar.Style>
+													</ProgressBar>
+													<SelectiveScrollingGrid>
+														<SelectiveScrollingGrid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto" />
+															<ColumnDefinition Width="*" />
+														</SelectiveScrollingGrid.ColumnDefinitions>
+														<SelectiveScrollingGrid.RowDefinitions>
+															<RowDefinition Height="*" />
+															<RowDefinition Height="Auto" />
+														</SelectiveScrollingGrid.RowDefinitions>
+														<DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+														<DataGridDetailsPresenter Grid.Row="1" Grid.Column="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}" />
+														<DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+													</SelectiveScrollingGrid>
+												</Grid>
+											</Border>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding Scanning}" Value="True">
+										<Setter Property="TextBlock.FontStyle" Value="Italic" />
+										<Setter Property="TextBlock.Opacity" Value="0.5" />
+									</DataTrigger>
+									<DataTrigger Binding="{Binding Canceled}" Value="True">
+										<Setter Property="TextBlock.FontStyle" Value="Italic" />
+										<Setter Property="TextBlock.Opacity" Value="0.55" />
+									</DataTrigger>
+									<DataTrigger Binding="{Binding AccessDenied}" Value="True">
+										<Setter Property="TextBlock.Opacity" Value="0.5" />
+									</DataTrigger>
+									<DataTrigger Binding="{Binding IsVirtual}" Value="True">
+										<Setter Property="TextBlock.Opacity" Value="0.5" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</DataGrid.RowStyle>
+					</DataGrid>
+					<Grid Visibility="{Binding IsContentLoadDeferred, Converter={StaticResource BooleanToVisibilityConverter}}">
+						<StackPanel Width="420" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<TextBlock
+								Margin="0,0,0,8"
+								FontSize="22"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource ForegroundBrush}"
+								Text="Large folder" />
+							<TextBlock Margin="0,0,0,18" Foreground="{DynamicResource SecondaryForegroundBrush}" Text="{Binding ContentLoadWarningText}" TextWrapping="Wrap" />
+							<Button Padding="14,6" HorizontalAlignment="Left" Click="LoadLargeFolderTable_OnClick" Content="Load table anyway" />
+						</StackPanel>
+					</Grid>
 				</Grid>
 
 				<Grid Grid.Column="1" Width="20">
 					<GridSplitter Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" ShowsPreview="True" />
-					<ToggleButton IsChecked="{Binding IsDetailPaneExpanded,Mode=TwoWay}"
-					              Width="18"
-					              Height="28"
-					              HorizontalAlignment="Center"
-					              VerticalAlignment="Top"
-					              Margin="0,8,0,0"
-					              ToolTip="Show or hide details"
-					              AutomationProperties.Name="Show or hide details">
+					<ToggleButton
+						Width="18"
+						Height="28"
+						Margin="0,8,0,0"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Top"
+						AutomationProperties.Name="Show or hide details"
+						IsChecked="{Binding IsDetailPaneExpanded, Mode=TwoWay}"
+						ToolTip="Show or hide details">
 						<ToggleButton.Style>
 							<Style TargetType="ToggleButton">
 								<Setter Property="Content" Value="‹" />
@@ -476,11 +549,12 @@
 								<Setter Property="Template">
 									<Setter.Value>
 										<ControlTemplate TargetType="ToggleButton">
-											<Border x:Name="Root"
-											        Background="{TemplateBinding Background}"
-											        BorderBrush="{TemplateBinding BorderBrush}"
-											        BorderThickness="{TemplateBinding BorderThickness}"
-											        CornerRadius="9">
+											<Border
+												x:Name="Root"
+												Background="{TemplateBinding Background}"
+												BorderBrush="{TemplateBinding BorderBrush}"
+												BorderThickness="{TemplateBinding BorderThickness}"
+												CornerRadius="9">
 												<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 											</Border>
 											<ControlTemplate.Triggers>
@@ -515,14 +589,24 @@
 					<Grid.RowDefinitions>
 						<RowDefinition />
 					</Grid.RowDefinitions>
-					<Grid Margin="12" Visibility="{Binding IsDetailPaneExpanded,Converter={StaticResource BooleanToVisibilityConverter}}">
+					<Grid Margin="12" Visibility="{Binding IsDetailPaneExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="220" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition />
 						</Grid.RowDefinitions>
-						<v:PieChart Slices="{Binding PieSlices}" HighlightedSlice="{Binding HighlightedPieSlice, Mode=TwoWay}" SliceClicked="PieChart_OnSliceClicked" MinHeight="180" AutomationProperties.Name="Folder size distribution chart" />
-						<TextBlock Grid.Row="1" Text="{Binding DetailPath}" FontWeight="SemiBold" Margin="0,10,0,6" TextWrapping="Wrap" />
+						<v:PieChart
+							MinHeight="180"
+							AutomationProperties.Name="Folder size distribution chart"
+							HighlightedSlice="{Binding HighlightedPieSlice, Mode=TwoWay}"
+							SliceClicked="PieChart_OnSliceClicked"
+							Slices="{Binding PieSlices}" />
+						<TextBlock
+							Grid.Row="1"
+							Margin="0,10,0,6"
+							FontWeight="SemiBold"
+							Text="{Binding DetailPath}"
+							TextWrapping="Wrap" />
 						<ListBox Grid.Row="2" ItemsSource="{Binding PieSlices}" SelectedItem="{Binding HighlightedPieSlice, Mode=OneWay}">
 							<ListBox.ItemTemplate>
 								<DataTemplate>
@@ -532,9 +616,14 @@
 											<ColumnDefinition />
 											<ColumnDefinition Width="Auto" />
 										</Grid.ColumnDefinitions>
-										<Border Width="10" Height="10" CornerRadius="2" Background="{Binding Brush}" Margin="0,0,6,0" />
+										<Border
+											Width="10"
+											Height="10"
+											Margin="0,0,6,0"
+											Background="{Binding Brush}"
+											CornerRadius="2" />
 										<TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
-										<TextBlock Grid.Column="2" Text="{Binding Bytes,Converter={StaticResource FormatKbSizeConverter}}" FontFamily="Cascadia Mono, Consolas" Margin="8,0,0,0" />
+										<TextBlock Grid.Column="2" Margin="8,0,0,0" FontFamily="Cascadia Mono, Consolas" Text="{Binding Bytes, Converter={StaticResource FormatKbSizeConverter}}" />
 									</Grid>
 								</DataTemplate>
 							</ListBox.ItemTemplate>
@@ -556,13 +645,25 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					<TextBlock Grid.Column="0" Text="{Binding ScanStatusText}" Margin="0,0,8,0" />
-					<TextBlock Grid.Column="1" Text="{Binding ScanElapsedText}" Margin="0,0,8,0" />
-					<TextBlock Grid.Column="2" Text="{Binding ScannedFolderCountText}" Margin="0,0,8,0" />
-					<TextBlock Grid.Column="3" Text="{Binding ScanWorkerCountText}" Margin="0,0,8,0" />
-					<Button Grid.Column="4" Content="Cancel" Click="CancelScan_OnClick" Padding="8,1" Margin="0,0,8,0" Visibility="{Binding IsScanInProgress,Converter={StaticResource BooleanToVisibilityConverter}}" AutomationProperties.Name="Cancel scanning" />
-					<TextBlock Grid.Column="5" Text="{Binding CurrentScanPath}" TextTrimming="CharacterEllipsis" Margin="0,0,8,0" />
-					<Button Grid.Column="6" Click="ThemeToggle_OnClick" Style="{StaticResource ThemeToggleButtonStyle}" ToolTip="{Binding SelectedThemeMode}" AutomationProperties.Name="Toggle theme mode">
+					<TextBlock Grid.Column="0" Margin="0,0,8,0" Text="{Binding ScanStatusText}" />
+					<TextBlock Grid.Column="1" Margin="0,0,8,0" Text="{Binding ScanElapsedText}" />
+					<TextBlock Grid.Column="2" Margin="0,0,8,0" Text="{Binding ScannedFolderCountText}" />
+					<TextBlock Grid.Column="3" Margin="0,0,8,0" Text="{Binding ScanWorkerCountText}" />
+					<Button
+						Grid.Column="4"
+						Margin="0,0,8,0"
+						Padding="8,1"
+						AutomationProperties.Name="Cancel scanning"
+						Click="CancelScan_OnClick"
+						Content="Cancel"
+						Visibility="{Binding IsScanInProgress, Converter={StaticResource BooleanToVisibilityConverter}}" />
+					<TextBlock Grid.Column="5" Margin="0,0,8,0" Text="{Binding CurrentScanPath}" TextTrimming="CharacterEllipsis" />
+					<Button
+						Grid.Column="6"
+						AutomationProperties.Name="Toggle theme mode"
+						Click="ThemeToggle_OnClick"
+						Style="{StaticResource ThemeToggleButtonStyle}"
+						ToolTip="{Binding SelectedThemeMode}">
 						<Grid Width="56" Height="28">
 							<Border Background="{DynamicResource ToggleTrackBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="14" />
 							<Grid Margin="6,0">
@@ -570,15 +671,51 @@
 									<ColumnDefinition />
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
-								<TextBlock Width="18" Height="18" Text="✸" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource SunBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" />
-								<TextBlock Grid.Column="1" Width="18" Height="18" Text="☾" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource MoonBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Center" RenderTransformOrigin="0.5,0.5">
+								<TextBlock
+									Width="18"
+									Height="18"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Center"
+									FontSize="14"
+									FontWeight="SemiBold"
+									Foreground="{DynamicResource SunBrush}"
+									Text="✸"
+									TextAlignment="Center" />
+								<TextBlock
+									Grid.Column="1"
+									Width="18"
+									Height="18"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Center"
+									FontSize="14"
+									FontWeight="SemiBold"
+									Foreground="{DynamicResource MoonBrush}"
+									RenderTransformOrigin="0.5,0.5"
+									Text="☾"
+									TextAlignment="Center">
 									<TextBlock.RenderTransform>
 										<RotateTransform Angle="180" />
 									</TextBlock.RenderTransform>
 								</TextBlock>
 							</Grid>
-							<Border Width="22" Height="22" Margin="3" Background="{DynamicResource SelectionBrush}" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="11">
-								<TextBlock Width="18" Height="18" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource SunBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" RenderTransformOrigin="0.5,0.5">
+							<Border
+								Width="22"
+								Height="22"
+								Margin="3"
+								Background="{DynamicResource SelectionBrush}"
+								BorderBrush="{DynamicResource AccentBrush}"
+								BorderThickness="1"
+								CornerRadius="11">
+								<TextBlock
+									Width="18"
+									Height="18"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									FontSize="14"
+									FontWeight="SemiBold"
+									Foreground="{DynamicResource SunBrush}"
+									RenderTransformOrigin="0.5,0.5"
+									TextAlignment="Center">
 									<TextBlock.Style>
 										<Style TargetType="TextBlock">
 											<Setter Property="Text" Value="✸" />

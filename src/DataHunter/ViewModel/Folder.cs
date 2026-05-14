@@ -5,7 +5,8 @@ namespace DataHunter.ViewModel
 {
 	public class Folder : DataContainer
 	{
-		public Folder(string fullName, DataContainer parent, FolderScanCache cache) : base(parent, cache)
+		public Folder(string fullName, DataContainer parent, FolderScanCache cache)
+			: base(parent, cache)
 		{
 			Info = new DirectoryInfo(fullName);
 		}

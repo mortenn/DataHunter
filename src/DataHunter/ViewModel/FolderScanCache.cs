@@ -49,14 +49,14 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				lock(sync)
+				lock (sync)
 					return children.ToList();
 			}
 		}
 
 		internal void Reset()
 		{
-			lock(sync)
+			lock (sync)
 			{
 				AccessDenied = false;
 				ChildrenLoaded = false;
@@ -82,7 +82,7 @@ namespace DataHunter.ViewModel
 
 		internal void SetAccessDenied()
 		{
-			lock(sync)
+			lock (sync)
 				AccessDenied = true;
 
 			OnPropertyChanged(nameof(AccessDenied));
@@ -90,7 +90,7 @@ namespace DataHunter.ViewModel
 
 		internal void SetChildren(List<FolderScanEntry> value)
 		{
-			lock(sync)
+			lock (sync)
 			{
 				children = value;
 				ChildrenLoaded = true;
@@ -102,7 +102,7 @@ namespace DataHunter.ViewModel
 
 		internal void SetFileBytes(long value)
 		{
-			lock(sync)
+			lock (sync)
 			{
 				FileBytes = value;
 				TotalBytes = value;
@@ -114,7 +114,7 @@ namespace DataHunter.ViewModel
 
 		internal void SetScanning(bool value)
 		{
-			lock(sync)
+			lock (sync)
 				Scanning = value;
 
 			OnPropertyChanged(nameof(Scanning));
@@ -122,10 +122,10 @@ namespace DataHunter.ViewModel
 
 		internal void SetScanned(bool value)
 		{
-			lock(sync)
+			lock (sync)
 			{
 				Scanned = value;
-				if(value)
+				if (value)
 					Canceled = false;
 			}
 
@@ -135,10 +135,10 @@ namespace DataHunter.ViewModel
 
 		internal void SetCanceled(bool value)
 		{
-			lock(sync)
+			lock (sync)
 			{
 				Canceled = value;
-				if(value)
+				if (value)
 					Scanned = false;
 			}
 
@@ -148,7 +148,7 @@ namespace DataHunter.ViewModel
 
 		internal void SetTotalBytes(long value)
 		{
-			lock(sync)
+			lock (sync)
 				TotalBytes = value;
 
 			OnPropertyChanged(nameof(TotalBytes));
@@ -156,9 +156,9 @@ namespace DataHunter.ViewModel
 
 		internal bool TryCountInScan()
 		{
-			lock(sync)
+			lock (sync)
 			{
-				if(CountedInScan)
+				if (CountedInScan)
 					return false;
 
 				CountedInScan = true;
@@ -168,9 +168,9 @@ namespace DataHunter.ViewModel
 
 		internal bool TryCountFilesInScan()
 		{
-			lock(sync)
+			lock (sync)
 			{
-				if(FilesCountedInScan)
+				if (FilesCountedInScan)
 					return false;
 
 				FilesCountedInScan = true;
@@ -308,7 +308,7 @@ namespace DataHunter.ViewModel
 
 		public void CancelAll()
 		{
-			lock(cancellationSync)
+			lock (cancellationSync)
 			{
 				scanningSuspended = true;
 				cancellation.Cancel();
@@ -317,10 +317,10 @@ namespace DataHunter.ViewModel
 
 		public void ResumeScanning()
 		{
-			lock(cancellationSync)
+			lock (cancellationSync)
 			{
 				scanningSuspended = false;
-				if(cancellation.IsCancellationRequested)
+				if (cancellation.IsCancellationRequested)
 				{
 					cancellation.Dispose();
 					cancellation = new CancellationTokenSource();
@@ -328,12 +328,15 @@ namespace DataHunter.ViewModel
 			}
 		}
 
-		private void EnsureChildrenLoaded(FolderScanEntry entry, CancellationToken cancellationToken = default(CancellationToken))
+		private void EnsureChildrenLoaded(
+			FolderScanEntry entry,
+			CancellationToken cancellationToken = default(CancellationToken)
+		)
 		{
-			if(entry.ChildrenLoaded)
+			if (entry.ChildrenLoaded)
 				return;
 
-			if(entry.IsVirtual)
+			if (entry.IsVirtual)
 			{
 				entry.SetChildren(new List<FolderScanEntry>());
 				return;
@@ -342,29 +345,29 @@ namespace DataHunter.ViewModel
 			try
 			{
 				var children = new List<FolderScanEntry>();
-				foreach(var child in Directory.EnumerateDirectories(entry.FullName))
+				foreach (var child in Directory.EnumerateDirectories(entry.FullName))
 				{
 					cancellationToken.ThrowIfCancellationRequested();
 					children.Add(GetOrCreate(child));
 				}
 				entry.SetChildren(children);
 			}
-			catch(DirectoryNotFoundException)
+			catch (DirectoryNotFoundException)
 			{
 				entry.SetAccessDenied();
 				entry.SetChildren(new List<FolderScanEntry>());
 			}
-			catch(UnauthorizedAccessException)
+			catch (UnauthorizedAccessException)
 			{
 				entry.SetAccessDenied();
 				entry.SetChildren(new List<FolderScanEntry>());
 			}
-			catch(IOException)
+			catch (IOException)
 			{
 				entry.SetAccessDenied();
 				entry.SetChildren(new List<FolderScanEntry>());
 			}
-			catch(SecurityException)
+			catch (SecurityException)
 			{
 				entry.SetAccessDenied();
 				entry.SetChildren(new List<FolderScanEntry>());
@@ -375,29 +378,30 @@ namespace DataHunter.ViewModel
 		{
 			var children = entry.Children;
 			entry.Reset();
-			foreach(var child in children)
+			foreach (var child in children)
 				Reset(child);
 		}
 
 		private Task<long> ScanAsync(FolderScanEntry entry)
 		{
-			if(entry.Scanned)
+			if (entry.Scanned)
 				return Task.FromResult(entry.TotalBytes);
 
 			var cancellationToken = CurrentCancellationToken;
-			if(cancellationToken.IsCancellationRequested || scanningSuspended)
+			if (cancellationToken.IsCancellationRequested || scanningSuspended)
 				return Task.FromCanceled<long>(cancellationToken);
 
 			Lazy<Task<long>> activeScan;
-			if(scans.TryGetValue(entry.FullName, out activeScan))
+			if (scans.TryGetValue(entry.FullName, out activeScan))
 				return activeScan.Value;
 
 			var session = new ScanSession(cancellationToken);
 			var scan = new Lazy<Task<long>>(
 				() => Task.Run(() => ScanEntry(entry, session, 0), cancellationToken),
-				LazyThreadSafetyMode.ExecutionAndPublication);
+				LazyThreadSafetyMode.ExecutionAndPublication
+			);
 
-			if(scans.TryAdd(entry.FullName, scan))
+			if (scans.TryAdd(entry.FullName, scan))
 			{
 				OnActiveWorkerCountChanged();
 				return scan.Value;
@@ -411,18 +415,18 @@ namespace DataHunter.ViewModel
 			var started = false;
 			try
 			{
-				lock(entry.ScanSync)
+				lock (entry.ScanSync)
 				{
 					session.CancellationToken.ThrowIfCancellationRequested();
-					if(entry.Scanned)
+					if (entry.Scanned)
 						return entry.TotalBytes;
-					if(depth > MaxScanDepth)
+					if (depth > MaxScanDepth)
 					{
 						FlightRecorder.Log($"Maximum scan depth reached at {entry.FullName}");
 						entry.SetAccessDenied();
 						return entry.TotalBytes;
 					}
-					if(!session.TryEnter(entry.FullName))
+					if (!session.TryEnter(entry.FullName))
 					{
 						FlightRecorder.Log($"Skipping scan cycle at {entry.FullName}");
 						return entry.TotalBytes;
@@ -439,12 +443,12 @@ namespace DataHunter.ViewModel
 
 					EnsureChildrenLoaded(entry, session.CancellationToken);
 					OnEntryChanged(entry);
-					if(!entry.IsVirtual && !entry.AccessDenied)
+					if (!entry.IsVirtual && !entry.AccessDenied)
 					{
-						foreach(var child in entry.Children)
+						foreach (var child in entry.Children)
 						{
 							session.CancellationToken.ThrowIfCancellationRequested();
-							if(child.IsVirtual)
+							if (child.IsVirtual)
 								continue;
 
 							total += ScanChild(child, session, depth + 1);
@@ -460,7 +464,7 @@ namespace DataHunter.ViewModel
 					return total;
 				}
 			}
-			catch(OperationCanceledException)
+			catch (OperationCanceledException)
 			{
 				entry.SetCanceled(true);
 				OnEntryChanged(entry);
@@ -468,13 +472,13 @@ namespace DataHunter.ViewModel
 			}
 			finally
 			{
-				if(started)
+				if (started)
 				{
 					entry.SetScanning(false);
 					OnScanFinished(entry);
 				}
 				Lazy<Task<long>> removed;
-				if(scans.TryRemove(entry.FullName, out removed))
+				if (scans.TryRemove(entry.FullName, out removed))
 					OnActiveWorkerCountChanged();
 			}
 		}
@@ -483,37 +487,43 @@ namespace DataHunter.ViewModel
 		{
 			var root = GetRoot(entry.FullName);
 			var counts = GetCounts(root);
-			if(Interlocked.Decrement(ref counts.ActiveScans) == 0)
+			if (Interlocked.Decrement(ref counts.ActiveScans) == 0)
 				ScanningChanged?.Invoke(this, new FolderScanningChanged(root, false));
 		}
 
 		private void CountCompleted(FolderScanEntry entry)
 		{
-			if(!entry.TryCountFilesInScan())
+			if (!entry.TryCountFilesInScan())
 				return;
 
 			var root = GetRoot(entry.FullName);
 			var counts = GetCounts(root);
 			var completed = Interlocked.Increment(ref counts.CompletedFolders);
-			FolderScanCountsChanged?.Invoke(this, new FolderScanCounts(root, completed, Volatile.Read(ref counts.TotalFolders)));
+			FolderScanCountsChanged?.Invoke(
+				this,
+				new FolderScanCounts(root, completed, Volatile.Read(ref counts.TotalFolders))
+			);
 		}
 
 		private void CountDiscovered(FolderScanEntry entry)
 		{
-			if(!entry.TryCountInScan())
+			if (!entry.TryCountInScan())
 				return;
 
 			var root = GetRoot(entry.FullName);
 			var counts = GetCounts(root);
 			var total = Interlocked.Increment(ref counts.TotalFolders);
-			FolderScanCountsChanged?.Invoke(this, new FolderScanCounts(root, Volatile.Read(ref counts.CompletedFolders), total));
+			FolderScanCountsChanged?.Invoke(
+				this,
+				new FolderScanCounts(root, Volatile.Read(ref counts.CompletedFolders), total)
+			);
 		}
 
 		private void OnScanStarted(FolderScanEntry entry)
 		{
 			var root = GetRoot(entry.FullName);
 			var counts = GetCounts(root);
-			if(Interlocked.Increment(ref counts.ActiveScans) == 1)
+			if (Interlocked.Increment(ref counts.ActiveScans) == 1)
 				ScanningChanged?.Invoke(this, new FolderScanningChanged(root, true));
 
 			CountDiscovered(entry);
@@ -534,7 +544,7 @@ namespace DataHunter.ViewModel
 		private long ScanChild(FolderScanEntry child, ScanSession session, int depth)
 		{
 			Lazy<Task<long>> activeScan;
-			if(scans.TryGetValue(child.FullName, out activeScan))
+			if (scans.TryGetValue(child.FullName, out activeScan))
 				return activeScan.Value.GetAwaiter().GetResult();
 
 			return ScanEntry(child, session, depth);
@@ -542,51 +552,43 @@ namespace DataHunter.ViewModel
 
 		private static long FindFileBytes(FolderScanEntry entry, CancellationToken cancellationToken)
 		{
-			if(entry.IsVirtual || entry.AccessDenied)
+			if (entry.IsVirtual || entry.AccessDenied)
 				return 0;
 
 			try
 			{
 				long total = 0;
-				foreach(var file in Directory.EnumerateFiles(entry.FullName))
+				foreach (var file in Directory.EnumerateFiles(entry.FullName))
 				{
 					cancellationToken.ThrowIfCancellationRequested();
 					try
 					{
 						total += new FileInfo(file).Length;
 					}
-					catch(FileNotFoundException)
-					{
-					}
-					catch(UnauthorizedAccessException)
-					{
-					}
-					catch(IOException)
-					{
-					}
-					catch(SecurityException)
-					{
-					}
+					catch (FileNotFoundException) { }
+					catch (UnauthorizedAccessException) { }
+					catch (IOException) { }
+					catch (SecurityException) { }
 				}
 
 				return total;
 			}
-			catch(DirectoryNotFoundException)
+			catch (DirectoryNotFoundException)
 			{
 				entry.SetAccessDenied();
 				return 0;
 			}
-			catch(UnauthorizedAccessException)
+			catch (UnauthorizedAccessException)
 			{
 				entry.SetAccessDenied();
 				return 0;
 			}
-			catch(IOException)
+			catch (IOException)
 			{
 				entry.SetAccessDenied();
 				return 0;
 			}
-			catch(SecurityException)
+			catch (SecurityException)
 			{
 				entry.SetAccessDenied();
 				return 0;
@@ -612,12 +614,12 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				if(!cancellation.IsCancellationRequested)
+				if (!cancellation.IsCancellationRequested)
 					return cancellation.Token;
 
-				lock(cancellationSync)
+				lock (cancellationSync)
 				{
-					if(cancellation.IsCancellationRequested && !scanningSuspended && scans.IsEmpty)
+					if (cancellation.IsCancellationRequested && !scanningSuspended && scans.IsEmpty)
 					{
 						cancellation.Dispose();
 						cancellation = new CancellationTokenSource();
@@ -654,9 +656,18 @@ namespace DataHunter.ViewModel
 			private readonly HashSet<string> visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		}
 
-		private readonly ConcurrentDictionary<string, FolderScanEntry> entries = new ConcurrentDictionary<string, FolderScanEntry>(StringComparer.OrdinalIgnoreCase);
-		private readonly ConcurrentDictionary<string, Lazy<Task<long>>> scans = new ConcurrentDictionary<string, Lazy<Task<long>>>(StringComparer.OrdinalIgnoreCase);
-		private readonly ConcurrentDictionary<string, DriveScanCounts> scanCounts = new ConcurrentDictionary<string, DriveScanCounts>(StringComparer.OrdinalIgnoreCase);
+		private readonly ConcurrentDictionary<string, FolderScanEntry> entries = new ConcurrentDictionary<
+			string,
+			FolderScanEntry
+		>(StringComparer.OrdinalIgnoreCase);
+		private readonly ConcurrentDictionary<string, Lazy<Task<long>>> scans = new ConcurrentDictionary<
+			string,
+			Lazy<Task<long>>
+		>(StringComparer.OrdinalIgnoreCase);
+		private readonly ConcurrentDictionary<string, DriveScanCounts> scanCounts = new ConcurrentDictionary<
+			string,
+			DriveScanCounts
+		>(StringComparer.OrdinalIgnoreCase);
 		private readonly object cancellationSync = new object();
 		private CancellationTokenSource cancellation = new CancellationTokenSource();
 		private volatile bool scanningSuspended;

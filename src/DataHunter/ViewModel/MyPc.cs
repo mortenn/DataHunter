@@ -20,13 +20,10 @@ namespace DataHunter.ViewModel
 
 		public bool IsExpanded
 		{
-			get
-			{
-				return isExpanded;
-			}
+			get { return isExpanded; }
 			set
 			{
-				if(isExpanded == value)
+				if (isExpanded == value)
 					return;
 
 				isExpanded = value;
@@ -36,13 +33,10 @@ namespace DataHunter.ViewModel
 
 		public bool IsSelected
 		{
-			get
-			{
-				return isSelected;
-			}
+			get { return isSelected; }
 			set
 			{
-				if(isSelected == value)
+				if (isSelected == value)
 					return;
 
 				isSelected = value;

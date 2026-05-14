@@ -5,7 +5,8 @@ namespace DataHunter.ViewModel
 {
 	public class Drive : DataContainer
 	{
-		public Drive(DriveInfo driveInfo, FolderScanCache cache) : base(null, cache)
+		public Drive(DriveInfo driveInfo, FolderScanCache cache)
+			: base(null, cache)
 		{
 			Info = driveInfo;
 		}

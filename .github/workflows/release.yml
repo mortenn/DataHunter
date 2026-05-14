@@ -1,0 +1,147 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    name: Compute release version
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute version
+        id: version
+        shell: pwsh
+        run: |
+          $pattern = '^v(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+)$'
+          $headTag = git tag --points-at HEAD |
+            Where-Object { $_ -match $pattern } |
+            Sort-Object { [version]$_.Substring(1) } -Descending |
+            Select-Object -First 1
+
+          if ($headTag) {
+            $version = $headTag.Substring(1)
+          } else {
+            $latestTag = git tag --list 'v*.*.*' |
+              Where-Object { $_ -match $pattern } |
+              Sort-Object { [version]$_.Substring(1) } -Descending |
+              Select-Object -First 1
+
+            if (-not $latestTag) {
+              throw "No release tags found. Create an initial vMAJOR.MINOR.PATCH tag before releasing."
+            }
+
+            $latest = [version]$latestTag.Substring(1)
+            $version = "$($latest.Major).$($latest.Minor).$($latest.Build + 1)"
+          }
+
+          "VERSION=$version" >> $env:GITHUB_ENV
+          "TAG=v$version" >> $env:GITHUB_ENV
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version" >> $env:GITHUB_OUTPUT
+
+  publish:
+    name: Publish ${{ matrix.name }}
+    runs-on: windows-latest
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: win-x64 self-contained
+            asset-suffix: win-x64-self-contained
+            publish-args: --runtime win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:EnableCompressionInSingleFile=true
+          - name: .NET 10 runtime-dependent
+            asset-suffix: win-x64-framework-dependent
+            publish-args: --self-contained false /p:UseAppHost=true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Tag release commit
+        shell: pwsh
+        run: |
+          if (-not (git tag --list "${{ needs.version.outputs.tag }}")) {
+            git tag "${{ needs.version.outputs.tag }}"
+          }
+
+      - name: Restore
+        shell: pwsh
+        run: dotnet restore DataHunter.slnx
+
+      - name: Build
+        shell: pwsh
+        run: dotnet build DataHunter.slnx --configuration Release --no-restore /p:MinVerBuildMetadata=$env:GITHUB_SHA
+
+      - name: Publish
+        shell: pwsh
+        run: dotnet publish src/DataHunter/DataHunter.csproj --configuration Release --output "artifacts/publish/${{ matrix.asset-suffix }}" ${{ matrix.publish-args }} /p:DebugType=None /p:DebugSymbols=false /p:MinVerBuildMetadata=$env:GITHUB_SHA
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/release | Out-Null
+          Compress-Archive -Path "artifacts/publish/${{ matrix.asset-suffix }}/*" -DestinationPath "artifacts/release/DataHunter-${{ needs.version.outputs.version }}-${{ matrix.asset-suffix }}.zip" -Force
+
+      - name: Upload release asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: DataHunter-${{ needs.version.outputs.version }}-${{ matrix.asset-suffix }}
+          path: artifacts/release/*.zip
+
+  release:
+    name: Create draft release
+    runs-on: windows-latest
+    needs:
+      - version
+      - publish
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download release assets
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/release
+          pattern: DataHunter-${{ needs.version.outputs.version }}-*
+          merge-multiple: true
+
+      - name: Create draft release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if (-not (git tag --list "${{ needs.version.outputs.tag }}")) {
+            git tag "${{ needs.version.outputs.tag }}"
+          }
+          git push origin "${{ needs.version.outputs.tag }}"
+          $assets = Get-ChildItem artifacts/release -Filter *.zip | ForEach-Object { $_.FullName }
+          gh release create "${{ needs.version.outputs.tag }}" $assets `
+            --verify-tag `
+            --draft `
+            --title "DataHunter ${{ needs.version.outputs.version }}" `
+            --notes "Draft release for DataHunter ${{ needs.version.outputs.version }}."

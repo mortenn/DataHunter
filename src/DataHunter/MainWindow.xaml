@@ -284,7 +284,7 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Button Click="LandingShortcut_OnClick" Style="{StaticResource LandingShortcutButtonStyle}" Margin="4">
+							<Button Click="LandingShortcut_OnClick" Style="{StaticResource LandingShortcutButtonStyle}" Margin="4" AutomationProperties.Name="{Binding Title}">
 								<Grid HorizontalAlignment="Stretch">
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
@@ -338,8 +338,8 @@
 			</Grid.RowDefinitions>
 
 			<StackPanel Grid.Row="0" Background="Transparent" Orientation="Horizontal" Margin="8,8,8,4">
-				<Button Content="⬑" Command="{Binding NavigateCommand}" FontSize="16" Margin="2" />
-				<Button Content="↻" Command="{Binding RefreshCommand}" FontSize="16" Margin="0,2" />
+				<Button Content="⬑" Command="{Binding NavigateCommand}" FontSize="16" Margin="2" AutomationProperties.Name="Navigate back" />
+				<Button Content="↻" Command="{Binding RefreshCommand}" FontSize="16" Margin="0,2" AutomationProperties.Name="Refresh selected folder" />
 				<Button Content="Open in explorer" Command="{Binding OpenCommand}" FontSize="16" Margin="0,2" />
 			</StackPanel>
 
@@ -464,7 +464,8 @@
 					              HorizontalAlignment="Center"
 					              VerticalAlignment="Top"
 					              Margin="0,8,0,0"
-					              ToolTip="Show or hide details">
+					              ToolTip="Show or hide details"
+					              AutomationProperties.Name="Show or hide details">
 						<ToggleButton.Style>
 							<Style TargetType="ToggleButton">
 								<Setter Property="Content" Value="‹" />
@@ -520,7 +521,7 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition />
 						</Grid.RowDefinitions>
-						<v:PieChart Slices="{Binding PieSlices}" HighlightedSlice="{Binding HighlightedPieSlice, Mode=TwoWay}" SliceClicked="PieChart_OnSliceClicked" MinHeight="180" />
+						<v:PieChart Slices="{Binding PieSlices}" HighlightedSlice="{Binding HighlightedPieSlice, Mode=TwoWay}" SliceClicked="PieChart_OnSliceClicked" MinHeight="180" AutomationProperties.Name="Folder size distribution chart" />
 						<TextBlock Grid.Row="1" Text="{Binding DetailPath}" FontWeight="SemiBold" Margin="0,10,0,6" TextWrapping="Wrap" />
 						<ListBox Grid.Row="2" ItemsSource="{Binding PieSlices}" SelectedItem="{Binding HighlightedPieSlice, Mode=OneWay}">
 							<ListBox.ItemTemplate>
@@ -559,9 +560,9 @@
 					<TextBlock Grid.Column="1" Text="{Binding ScanElapsedText}" Margin="0,0,8,0" />
 					<TextBlock Grid.Column="2" Text="{Binding ScannedFolderCountText}" Margin="0,0,8,0" />
 					<TextBlock Grid.Column="3" Text="{Binding ScanWorkerCountText}" Margin="0,0,8,0" />
-					<Button Grid.Column="4" Content="Cancel" Click="CancelScan_OnClick" Padding="8,1" Margin="0,0,8,0" Visibility="{Binding IsScanInProgress,Converter={StaticResource BooleanToVisibilityConverter}}" />
+					<Button Grid.Column="4" Content="Cancel" Click="CancelScan_OnClick" Padding="8,1" Margin="0,0,8,0" Visibility="{Binding IsScanInProgress,Converter={StaticResource BooleanToVisibilityConverter}}" AutomationProperties.Name="Cancel scanning" />
 					<TextBlock Grid.Column="5" Text="{Binding CurrentScanPath}" TextTrimming="CharacterEllipsis" Margin="0,0,8,0" />
-					<Button Grid.Column="6" Click="ThemeToggle_OnClick" Style="{StaticResource ThemeToggleButtonStyle}" ToolTip="{Binding SelectedThemeMode}">
+					<Button Grid.Column="6" Click="ThemeToggle_OnClick" Style="{StaticResource ThemeToggleButtonStyle}" ToolTip="{Binding SelectedThemeMode}" AutomationProperties.Name="Toggle theme mode">
 						<Grid Width="56" Height="28">
 							<Border Background="{DynamicResource ToggleTrackBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="14" />
 							<Grid Margin="6,0">

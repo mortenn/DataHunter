@@ -10,7 +10,7 @@
     <Description>Data usage tool</Description>
     <Company>Morten Nilsen</Company>
     <Copyright>Copyright © 2017</Copyright>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>

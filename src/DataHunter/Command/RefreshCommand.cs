@@ -1,4 +1,5 @@
 ﻿using DataHunter.ViewModel;
+using AppContext = DataHunter.ViewModel.AppContext;
 
 namespace DataHunter.Command
 {
@@ -16,6 +17,11 @@ namespace DataHunter.Command
 		public override void Execute(object parameter)
 		{
 			Context.SelectedFolder.Rescan();
+		}
+
+		protected override bool AffectsCanExecute(string propertyName)
+		{
+			return propertyName == nameof(DataContainer.AccessDenied) || propertyName == nameof(DataContainer.Scanning);
 		}
 	}
 }

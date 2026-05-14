@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -12,6 +13,11 @@ namespace DataHunter.View
 	public class PieChart : FrameworkElement
 	{
 		private readonly List<RenderedSlice> renderedSlices = new List<RenderedSlice>();
+
+		public PieChart()
+		{
+			Focusable = true;
+		}
 
 		public static readonly DependencyProperty SlicesProperty = DependencyProperty.Register(
 			nameof(Slices),
@@ -104,12 +110,63 @@ namespace DataHunter.View
 		protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
 		{
 			base.OnMouseLeftButtonUp(e);
+			Focus();
 			var slice = HitTestSlice(e.GetPosition(this));
 			if(slice?.Source == null)
 				return;
 
 			SliceClicked?.Invoke(this, new PieSliceClickedEventArgs(slice));
 			e.Handled = true;
+		}
+
+		protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+		{
+			base.OnGotKeyboardFocus(e);
+			if(HighlightedSlice == null)
+				MoveHighlight(1);
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			if(e.Key == Key.Right || e.Key == Key.Down)
+			{
+				MoveHighlight(1);
+				e.Handled = true;
+				return;
+			}
+
+			if(e.Key == Key.Left || e.Key == Key.Up)
+			{
+				MoveHighlight(-1);
+				e.Handled = true;
+				return;
+			}
+
+			if(e.Key != Key.Enter && e.Key != Key.Space)
+				return;
+
+			if(HighlightedSlice?.Source == null)
+				return;
+
+			SliceClicked?.Invoke(this, new PieSliceClickedEventArgs(HighlightedSlice));
+			e.Handled = true;
+		}
+
+		private void MoveHighlight(int direction)
+		{
+			var slices = Slices?.Where(s => s.Bytes > 0).ToList();
+			if(slices == null || slices.Count == 0)
+				return;
+
+			var currentIndex = HighlightedSlice == null ? -1 : slices.FindIndex(s => IsSameSlice(s, HighlightedSlice));
+			var nextIndex = (currentIndex + direction + slices.Count) % slices.Count;
+			HighlightedSlice = slices[nextIndex];
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new PieChartAutomationPeer(this);
 		}
 
 		private static void DrawEmptyState(DrawingContext drawingContext)
@@ -211,6 +268,23 @@ namespace DataHunter.View
 			public Point Center { get; }
 
 			public double Radius { get; }
+		}
+
+		private class PieChartAutomationPeer : FrameworkElementAutomationPeer
+		{
+			public PieChartAutomationPeer(PieChart owner) : base(owner)
+			{
+			}
+
+			protected override string GetClassNameCore()
+			{
+				return nameof(PieChart);
+			}
+
+			protected override AutomationControlType GetAutomationControlTypeCore()
+			{
+				return AutomationControlType.Custom;
+			}
 		}
 	}
 

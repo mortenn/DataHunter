@@ -20,7 +20,7 @@ namespace DataHunter.ViewModel
 		{
 			get
 			{
-				var path = Parent.Path;
+				var path = new List<DataContainer>(Parent.Path);
 				path.Add(this);
 				return path;
 			}

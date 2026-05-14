@@ -11,12 +11,37 @@ namespace DataHunter.Command
 		{
 			Context = context;
 			Context.PropertyChanged += ContextOnPropertyChanged;
+			AttachSelectedFolder();
 		}
 
 		private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs args)
 		{
 			if(args.PropertyName == nameof(AppContext.SelectedFolder))
+			{
+				AttachSelectedFolder();
 				OnCanExecuteChanged();
+			}
+		}
+
+		private void AttachSelectedFolder()
+		{
+			if(selectedFolder != null)
+				selectedFolder.PropertyChanged -= SelectedFolderOnPropertyChanged;
+
+			selectedFolder = Context.SelectedFolder;
+			if(selectedFolder != null)
+				selectedFolder.PropertyChanged += SelectedFolderOnPropertyChanged;
+		}
+
+		private void SelectedFolderOnPropertyChanged(object sender, PropertyChangedEventArgs args)
+		{
+			if(AffectsCanExecute(args.PropertyName))
+				OnCanExecuteChanged();
+		}
+
+		protected virtual bool AffectsCanExecute(string propertyName)
+		{
+			return false;
 		}
 
 		public abstract bool CanExecute(object parameter);
@@ -26,6 +51,8 @@ namespace DataHunter.Command
 		public event EventHandler CanExecuteChanged;
 
 		protected AppContext Context;
+
+		private DataHunter.ViewModel.DataContainer selectedFolder;
 
 		protected virtual void OnCanExecuteChanged()
 		{

@@ -388,16 +388,22 @@ namespace DataHunter.ViewModel
 			if(cancellationToken.IsCancellationRequested || scanningSuspended)
 				return Task.FromCanceled<long>(cancellationToken);
 
+			Lazy<Task<long>> activeScan;
+			if(scans.TryGetValue(entry.FullName, out activeScan))
+				return activeScan.Value;
+
 			var session = new ScanSession(cancellationToken);
-			var added = false;
-			var task = scans.GetOrAdd(entry.FullName, p =>
+			var scan = new Lazy<Task<long>>(
+				() => Task.Run(() => ScanEntry(entry, session, 0), cancellationToken),
+				LazyThreadSafetyMode.ExecutionAndPublication);
+
+			if(scans.TryAdd(entry.FullName, scan))
 			{
-				added = true;
-				return Task.Run(() => ScanEntry(entry, session, 0), cancellationToken);
-			});
-			if(added)
 				OnActiveWorkerCountChanged();
-			return task;
+				return scan.Value;
+			}
+
+			return scans.TryGetValue(entry.FullName, out activeScan) ? activeScan.Value : ScanAsync(entry);
 		}
 
 		private long ScanEntry(FolderScanEntry entry, ScanSession session, int depth)
@@ -467,7 +473,7 @@ namespace DataHunter.ViewModel
 					entry.SetScanning(false);
 					OnScanFinished(entry);
 				}
-				Task<long> removed;
+				Lazy<Task<long>> removed;
 				if(scans.TryRemove(entry.FullName, out removed))
 					OnActiveWorkerCountChanged();
 			}
@@ -527,9 +533,9 @@ namespace DataHunter.ViewModel
 
 		private long ScanChild(FolderScanEntry child, ScanSession session, int depth)
 		{
-			Task<long> activeScan;
+			Lazy<Task<long>> activeScan;
 			if(scans.TryGetValue(child.FullName, out activeScan))
-				return activeScan.GetAwaiter().GetResult();
+				return activeScan.Value.GetAwaiter().GetResult();
 
 			return ScanEntry(child, session, depth);
 		}
@@ -649,7 +655,7 @@ namespace DataHunter.ViewModel
 		}
 
 		private readonly ConcurrentDictionary<string, FolderScanEntry> entries = new ConcurrentDictionary<string, FolderScanEntry>(StringComparer.OrdinalIgnoreCase);
-		private readonly ConcurrentDictionary<string, Task<long>> scans = new ConcurrentDictionary<string, Task<long>>(StringComparer.OrdinalIgnoreCase);
+		private readonly ConcurrentDictionary<string, Lazy<Task<long>>> scans = new ConcurrentDictionary<string, Lazy<Task<long>>>(StringComparer.OrdinalIgnoreCase);
 		private readonly ConcurrentDictionary<string, DriveScanCounts> scanCounts = new ConcurrentDictionary<string, DriveScanCounts>(StringComparer.OrdinalIgnoreCase);
 		private readonly object cancellationSync = new object();
 		private CancellationTokenSource cancellation = new CancellationTokenSource();

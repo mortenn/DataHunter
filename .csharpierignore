@@ -1,0 +1,5 @@
+# XAML files - formatting managed by XAML Styler instead of CSharpier
+**/*.xaml
+
+*.csproj
+*.props

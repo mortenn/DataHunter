@@ -1,4 +1,4 @@
-﻿using DataHunter.ViewModel;
+﻿using AppContext = DataHunter.ViewModel.AppContext;
 
 namespace DataHunter.Command
 {
